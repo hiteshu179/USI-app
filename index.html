@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<title>Unified Scholarship Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+:root{
+  --saffron:#E8640A;--saffron-light:#FDF0E6;--saffron-mid:#F5A56B;
+  --green:#1A6B3C;--green-light:#E6F3EC;
+  --navy:#1A2E4A;--navy-light:#EEF2F7;
+  --text:#1A1A1A;--text-2:#555;--text-3:#888;
+  --border:#E0E0E0;--white:#fff;--bg:#F4F5F7;
+  --red:#C0392B;--red-light:#FDECEA;
+  --amber:#B8860B;--amber-light:#FEF9E7;
+  --placeholder:#B0B8C4;
+}
+html,body{height:100%;background:#e8eaed;display:flex;align-items:center;justify-content:center;font-family:'Noto Sans',sans-serif;}
+#app{width:390px;height:844px;background:var(--bg);border-radius:40px;overflow:hidden;display:flex;flex-direction:column;position:relative;box-shadow:0 20px 60px rgba(0,0,0,0.18);}
+.screen{display:none;flex-direction:column;height:100%;overflow:hidden;}
+.screen.active{display:flex;}
+
+/* TOPBAR */
+.topbar{background:var(--white);padding:14px 18px 12px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);flex-shrink:0;}
+.topbar-left{display:flex;align-items:center;gap:10px;}
+.logo-mark{width:32px;height:32px;border-radius:8px;background:var(--saffron);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;}
+.topbar-name{font-size:13px;font-weight:600;color:var(--navy);}
+.topbar-sub{font-size:10px;color:var(--text-3);margin-top:1px;}
+.lang-pill{font-size:11px;padding:4px 10px;border-radius:20px;border:1px solid var(--border);background:var(--bg);color:var(--text-2);cursor:pointer;}
+
+/* AI BAR */
+.ai-bar{margin:10px 14px 0;background:var(--white);border:1px solid var(--border);border-radius:14px;padding:10px 14px;display:flex;align-items:center;gap:8px;cursor:pointer;transition:border-color .2s;flex-shrink:0;}
+.ai-bar:hover{border-color:var(--saffron);}
+.ai-pulse{width:8px;height:8px;border-radius:50%;background:var(--saffron);animation:pulse 2s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.6;transform:scale(1.2);}}
+.ai-bar-text{font-size:12px;color:var(--text-3);flex:1;}
+
+/* SCROLL */
+.scroll{flex:1;overflow-y:auto;padding:12px 14px 90px;}
+.scroll::-webkit-scrollbar{display:none;}
+.sec-head{font-size:11px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:.8px;margin:16px 0 8px;}
+.page-title{font-size:20px;font-weight:600;color:var(--navy);margin:14px 0 12px;}
+
+/* CARDS */
+.card{background:var(--white);border-radius:16px;border:1px solid var(--border);padding:14px 16px;cursor:pointer;transition:border-color .15s,transform .1s;margin-bottom:8px;}
+.card:hover{border-color:var(--saffron);transform:translateY(-1px);}
+.card:active{transform:scale(.98);}
+.card.placeholder{opacity:.5;cursor:default;}
+.card.placeholder:hover{border-color:var(--border);transform:none;}
+.card-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:6px;}
+.badge{font-size:10px;font-weight:600;padding:3px 8px;border-radius:6px;display:inline-block;}
+.badge-saffron{background:var(--saffron-light);color:var(--saffron);}
+.badge-green{background:var(--green-light);color:var(--green);}
+.badge-navy{background:var(--navy-light);color:var(--navy);}
+.badge-coming{background:#F0F0F0;color:#AAA;font-style:italic;}
+.card-title{font-size:14px;font-weight:600;color:var(--navy);}
+.card-sub{font-size:12px;color:var(--text-3);margin-top:3px;}
+
+/* HOME HERO */
+.hero{background:var(--navy);border-radius:18px;padding:18px;margin-bottom:12px;}
+.hero-greeting{font-size:12px;color:rgba(255,255,255,.5);margin-bottom:3px;}
+.hero-name{font-size:20px;font-weight:600;color:#fff;margin-bottom:2px;}
+.hero-sub{font-size:11px;color:rgba(255,255,255,.45);}
+.hero-tag{display:inline-block;margin-top:10px;font-size:11px;padding:4px 12px;border-radius:20px;background:var(--saffron);color:#fff;font-weight:500;}
+.quick-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;}
+.qcard{background:var(--white);border-radius:14px;border:1px solid var(--border);padding:14px 12px;cursor:pointer;text-align:center;transition:border-color .15s;}
+.qcard:hover{border-color:var(--saffron);}
+.qcard-icon{font-size:20px;margin-bottom:5px;}
+.qcard-label{font-size:11px;font-weight:500;color:var(--navy);}
+
+/* DETAIL HEADER */
+.detail-head{background:var(--navy);padding:12px 16px 20px;color:#fff;flex-shrink:0;}
+.back-btn-row{display:flex;align-items:center;gap:6px;margin-bottom:10px;}
+.back-btn{font-size:13px;color:rgba(255,255,255,.7);cursor:pointer;background:rgba(255,255,255,.12);border:none;padding:5px 12px 5px 8px;border-radius:20px;font-family:'Noto Sans',sans-serif;display:flex;align-items:center;gap:4px;}
+.back-btn:hover{background:rgba(255,255,255,.2);}
+.detail-badge{font-size:10px;padding:2px 9px;background:rgba(255,255,255,.15);border-radius:10px;display:inline-block;margin-bottom:8px;color:rgba(255,255,255,.85);font-weight:500;}
+.detail-title{font-size:18px;font-weight:600;color:#fff;margin-bottom:3px;}
+.detail-sub{font-size:12px;color:rgba(255,255,255,.55);}
+
+/* AGENT TIP */
+.agent-tip{background:var(--saffron-light);border:0.5px solid var(--saffron-mid);border-radius:12px;padding:10px 12px;margin-bottom:10px;display:flex;gap:8px;align-items:flex-start;}
+.agent-dot{width:8px;height:8px;border-radius:50%;background:var(--saffron);flex-shrink:0;margin-top:4px;}
+.agent-text{font-size:12px;color:#633806;line-height:1.55;}
+.agent-text strong{color:var(--saffron);}
+
+/* PROGRESS */
+.prog-row{display:flex;justify-content:space-between;margin-bottom:5px;}
+.prog-label{font-size:11px;color:var(--text-3);}
+.prog-val{font-size:11px;font-weight:600;color:var(--saffron);}
+.prog-wrap{background:#e8eaed;border-radius:4px;height:6px;margin-bottom:14px;}
+.prog-fill{height:6px;border-radius:4px;background:var(--saffron);}
+
+/* STEP CARDS */
+.step-card{background:var(--white);border-radius:14px;border:1px solid var(--border);margin-bottom:8px;overflow:hidden;cursor:pointer;transition:border-color .15s;}
+.step-card:hover{border-color:var(--saffron);}
+.step-head{display:flex;align-items:center;gap:10px;padding:12px 14px;}
+.step-num{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;flex-shrink:0;}
+.n-orange{background:var(--saffron-light);color:var(--saffron);}
+.n-blue{background:var(--navy-light);color:var(--navy);}
+.n-red{background:var(--red-light);color:var(--red);}
+.n-green{background:var(--green-light);color:var(--green);}
+.step-label{font-size:13px;font-weight:600;color:var(--navy);}
+.step-sub{font-size:11px;color:var(--text-3);margin-top:1px;}
+.step-arrow{margin-left:auto;font-size:16px;color:var(--text-3);}
+.step-body{border-top:1px solid var(--border);padding:10px 14px 12px;}
+.story-text{font-size:12px;color:var(--text-2);line-height:1.65;}
+.story-text strong{color:var(--navy);}
+.tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px;}
+.tag{font-size:10px;padding:3px 9px;border-radius:20px;font-weight:500;}
+.tag-orange{background:var(--saffron-light);color:var(--saffron);}
+.tag-green{background:var(--green-light);color:var(--green);}
+.tag-navy{background:var(--navy-light);color:var(--navy);}
+.tag-red{background:var(--red-light);color:var(--red);}
+
+/* BENEFIT CHIPS */
+.benefit-row{display:flex;gap:7px;margin-bottom:10px;}
+.benefit-chip{flex:1;background:var(--bg);border-radius:10px;padding:9px 6px;text-align:center;}
+.benefit-val{font-size:13px;font-weight:600;color:var(--navy);}
+.benefit-lbl{font-size:10px;color:var(--text-3);margin-top:2px;}
+
+/* CHECK ITEMS */
+.check-item{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;background:var(--white);border-radius:12px;border:1px solid var(--border);margin-bottom:7px;cursor:pointer;transition:border-color .15s;}
+.check-item:hover{border-color:var(--saffron);}
+.check-box{width:22px;height:22px;border-radius:6px;border:1.5px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-top:1px;font-size:11px;font-weight:700;}
+.cb-done{background:var(--green);border-color:var(--green);color:#fff;}
+.cb-warn{border-color:var(--saffron);color:var(--saffron);}
+.cb-alert{border-color:var(--red);color:var(--red);}
+.check-title{font-size:13px;font-weight:500;color:var(--navy);}
+.check-sub{font-size:11px;margin-top:2px;line-height:1.45;}
+.cs-ok{color:var(--green);}
+.cs-warn{color:var(--saffron);}
+.cs-alert{color:var(--red);font-weight:500;}
+.cs-muted{color:var(--text-3);}
+.check-right{margin-left:auto;font-size:14px;color:var(--text-3);padding-top:2px;}
+
+/* BUTTONS */
+.btn-primary{display:block;width:100%;padding:13px;background:var(--saffron);color:#fff;border:none;border-radius:14px;font-size:14px;font-weight:600;cursor:pointer;text-align:center;margin-bottom:8px;font-family:'Noto Sans',sans-serif;transition:background .15s;}
+.btn-primary:hover{background:#D4570A;}
+.btn-ghost{display:block;width:100%;padding:12px;background:#fff;border:1px solid var(--saffron);color:var(--saffron);border-radius:14px;font-size:14px;font-weight:600;cursor:pointer;text-align:center;margin-bottom:8px;font-family:'Noto Sans',sans-serif;}
+
+/* SUPPORT */
+.track-item{display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--white);border-radius:12px;border:1px solid var(--border);margin-bottom:8px;cursor:pointer;}
+.status-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.sd-pending{background:#F5C518;}
+.sd-ok{background:var(--green);}
+.sd-alert{background:var(--red);}
+.track-title{font-size:13px;font-weight:500;color:var(--navy);}
+.track-sub{font-size:11px;color:var(--text-3);margin-top:2px;}
+.alert-box{border-radius:12px;padding:11px 13px;margin-bottom:10px;display:flex;align-items:flex-start;gap:9px;}
+.alert-warn{background:var(--amber-light);border:1px solid #F0D070;}
+.alert-danger{background:var(--red-light);border:1px solid #F5C6C6;}
+.alert-icon{font-size:14px;flex-shrink:0;margin-top:1px;}
+.alert-text{font-size:12px;color:var(--text);line-height:1.5;}
+.alert-text strong{color:var(--amber);}
+.alert-danger .alert-text strong{color:var(--red);}
+
+/* BOTTOM NAV */
+.bottom-nav{background:var(--white);display:flex;border-top:1px solid var(--border);padding:8px 0 14px;position:absolute;bottom:0;left:0;right:0;}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:4px 0;}
+.nav-icon{font-size:18px;color:var(--text-3);transition:color .15s;}
+.nav-label{font-size:10px;color:var(--text-3);transition:color .15s;}
+.nav-item.active .nav-icon,.nav-item.active .nav-label{color:var(--saffron);}
+
+/* CHAT */
+.chat-header{background:var(--white);padding:12px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);flex-shrink:0;}
+.chat-wrap{display:flex;flex-direction:column;flex:1;overflow:hidden;}
+.chat-messages{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:10px;}
+.chat-messages::-webkit-scrollbar{display:none;}
+.msg{max-width:85%;border-radius:16px;font-size:13px;line-height:1.55;align-self:flex-start;}
+.msg.user{background:var(--navy);color:#fff;border-bottom-right-radius:4px;align-self:flex-end;padding:10px 13px;}
+.msg.bot{background:var(--white);border:1px solid var(--border);color:var(--text);border-bottom-left-radius:4px;padding:10px 13px;}
+.msg.typing{color:var(--text-3);font-style:italic;padding:10px 13px;}
+
+/* LOCATION CARD inside chat */
+.loc-card{background:var(--white);border:1px solid var(--border);border-radius:16px;border-bottom-left-radius:4px;overflow:hidden;max-width:85%;align-self:flex-start;}
+.loc-head{background:var(--navy);padding:10px 14px;}
+.loc-name{font-size:13px;font-weight:600;color:#fff;}
+.loc-body{padding:10px 14px;}
+.loc-row{font-size:12px;color:var(--text-2);line-height:1.6;margin-bottom:2px;}
+.loc-row span{color:var(--text-3);font-size:11px;}
+.loc-actions{display:flex;gap:7px;margin-top:10px;}
+.loc-btn{flex:1;padding:8px;border-radius:10px;font-size:12px;font-weight:600;cursor:pointer;text-align:center;border:none;font-family:'Noto Sans',sans-serif;}
+.loc-btn-copy{background:var(--bg);color:var(--navy);border:1px solid var(--border);}
+.loc-btn-map{background:var(--saffron);color:#fff;}
+
+.sq-wrap{background:var(--white);padding:8px 12px;border-top:1px solid var(--border);display:flex;gap:6px;flex-wrap:wrap;flex-shrink:0;}
+.sq-btn{font-size:11px;padding:5px 10px;border-radius:20px;border:1px solid var(--saffron);color:var(--saffron);background:#fff;cursor:pointer;white-space:nowrap;font-family:'Noto Sans',sans-serif;}
+.chat-input-wrap{background:var(--white);padding:10px 12px;border-top:1px solid var(--border);display:flex;gap:8px;align-items:flex-end;flex-shrink:0;}
+.chat-input{flex:1;border:1px solid var(--border);border-radius:20px;padding:9px 14px;font-size:13px;outline:none;resize:none;max-height:80px;font-family:'Noto Sans',sans-serif;background:var(--bg);color:var(--text);}
+.chat-send{width:36px;height:36px;border-radius:50%;background:var(--saffron);border:none;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
+.chat-send:disabled{background:var(--border);cursor:not-allowed;}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- HOME -->
+<div class="screen active" id="s-home">
+  <div class="topbar">
+    <div class="topbar-left"><div class="logo-mark">USP</div><div><div class="topbar-name">Unified Scholarship Portal</div><div class="topbar-sub">Student Services</div></div></div>
+    <div class="lang-pill">हि / EN</div>
+  </div>
+  <div style="padding:12px 14px 90px;display:flex;flex-direction:column;flex:1;overflow:hidden;">
+    <div class="hero">
+      <div class="hero-greeting">Welcome back</div>
+      <div class="hero-name">Priya Meena</div>
+      <div class="hero-sub">Class 12 · Tonk, Rajasthan</div>
+      <div class="hero-tag">1 active scheme</div>
+    </div>
+    <div class="sec-head">Quick actions</div>
+    <div class="quick-grid">
+      <div class="qcard" onclick="goSupport()">
+        <div class="qcard-icon">📍</div>
+        <div class="qcard-label">Check application status</div>
+      </div>
+      <div class="qcard" onclick="goDocuments()">
+        <div class="qcard-icon" style="position:relative;display:inline-block;">📄<span style="position:absolute;top:-4px;right:-6px;width:8px;height:8px;background:var(--red);border-radius:50%;display:block;"></span></div>
+        <div class="qcard-label">Fix documents</div>
+        <div style="font-size:10px;color:var(--red);margin-top:3px;font-weight:500;">2 need attention</div>
+      </div>
+    </div>
+    <div style="background:var(--white);border-radius:16px;border:1px solid var(--border);padding:14px;margin-bottom:12px;cursor:pointer;" onclick="goChat()">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+        <div class="ai-pulse"></div>
+        <span style="font-size:13px;font-weight:600;color:var(--navy);">Ask the scholarship assistant</span>
+        <span style="color:var(--saffron);margin-left:auto;">✦</span>
+      </div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;">
+        <button onclick="event.stopPropagation();goChat();setTimeout(()=>sendSuggested('Am I eligible for PMS?'),100);" style="font-size:11px;padding:5px 10px;border-radius:20px;border:1px solid var(--saffron);color:var(--saffron);background:#fff;cursor:pointer;font-family:'Noto Sans',sans-serif;">Am I eligible?</button>
+        <button onclick="event.stopPropagation();goChat();setTimeout(()=>sendSuggested('Where do I get my income certificate renewed in Tonk?'),100);" style="font-size:11px;padding:5px 10px;border-radius:20px;border:1px solid var(--saffron);color:var(--saffron);background:#fff;cursor:pointer;font-family:'Noto Sans',sans-serif;">Income cert office?</button>
+        <button onclick="event.stopPropagation();goChat();setTimeout(()=>sendSuggested('My payment was not received. What do I do?'),100);" style="font-size:11px;padding:5px 10px;border-radius:20px;border:1px solid var(--saffron);color:var(--saffron);background:#fff;cursor:pointer;font-family:'Noto Sans',sans-serif;">Payment issue?</button>
+      </div>
+    </div>
+    <div class="sec-head">Actively pursuing</div>
+    <div class="card" onclick="goPMS()">
+      <div class="card-top"><span class="badge badge-saffron">In progress</span><span style="font-size:16px;color:var(--text-3);">›</span></div>
+      <div class="card-title">Post-Matric Scholarship (PMS)</div>
+      <div class="card-sub">Fee reimbursement + ₹1,200/month · Documents pending</div>
+    </div>
+  </div>
+  <div class="bottom-nav">
+    <div class="nav-item active" onclick="goHome()"><div class="nav-icon">⌂</div><div class="nav-label">Home</div></div>
+    <div class="nav-item" onclick="goSchemes()"><div class="nav-icon">🎓</div><div class="nav-label">Schemes</div></div>
+    <div class="nav-item" onclick="goDocuments()"><div class="nav-icon">📄</div><div class="nav-label">Documents</div></div>
+    <div class="nav-item" onclick="goSupport()"><div class="nav-icon">⊙</div><div class="nav-label">Support</div></div>
+  </div>
+</div>
+
+<!-- SCHEMES LIST -->
+<div class="screen" id="s-schemes">
+  <div class="topbar"><div class="topbar-left"><div class="logo-mark">USP</div><div><div class="topbar-name">Unified Scholarship Portal</div><div class="topbar-sub">Student Services</div></div></div><div class="lang-pill">हि / EN</div></div>
+  <div class="ai-bar" onclick="goChat()"><div class="ai-pulse"></div><span class="ai-bar-text">Ask the scholarship assistant…</span><span style="color:var(--saffron);">✦</span></div>
+  <div class="scroll">
+    <div class="page-title">Schemes</div>
+    <div class="sec-head">Actively pursuing</div>
+    <div class="card" onclick="goPMS()">
+      <div class="card-top"><span class="badge badge-saffron">In progress</span><span style="font-size:16px;color:var(--text-3);">›</span></div>
+      <div class="card-title">Post-Matric Scholarship (PMS)</div>
+      <div class="card-sub">Fee reimbursement + ₹1,200/month · Documents pending</div>
+    </div>
+    <div class="sec-head">Should apply right now</div>
+    <div class="card placeholder">
+      <div class="card-top"><span class="badge badge-green">Eligible · Open now</span></div>
+      <div class="card-title" style="color:var(--placeholder)">Kalibai Bhil Scooty Scheme</div>
+      <div class="card-sub">Free scooty or ₹40,000 for SC girl students · Deadline approaching</div>
+    </div>
+    <div class="sec-head">Should pursue next year</div>
+    <div class="card placeholder">
+      <div class="card-top"><span class="badge badge-navy">After Class 12</span></div>
+      <div class="card-title" style="color:var(--placeholder)">Anuprati Coaching Scheme</div>
+      <div class="card-sub">Free coaching for competitive exams · Apply after Class 12 results</div>
+    </div>
+    <div class="card placeholder">
+      <div class="card-top"><span class="badge badge-navy">After Class 12</span></div>
+      <div class="card-title" style="color:var(--placeholder)">Mukhya Mantri Sarvjan Scholarship</div>
+      <div class="card-sub">Higher education support · Apply on college admission</div>
+    </div>
+    <div style="margin-top:16px;padding:12px 14px;background:var(--saffron-light);border-radius:12px;border:0.5px solid var(--saffron-mid);">
+      <div style="font-size:12px;color:#633806;line-height:1.6;"><strong style="color:var(--saffron);">Curious about other schemes?</strong><br>Ask the AI assistant — it will tell you what you qualify for and what to do next.</div>
+      <button onclick="goChat()" style="margin-top:8px;padding:7px 14px;background:var(--saffron);color:#fff;border:none;border-radius:10px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Noto Sans',sans-serif;">Ask assistant ✦</button>
+    </div>
+  </div>
+  <div class="bottom-nav">
+    <div class="nav-item" onclick="goHome()"><div class="nav-icon">⌂</div><div class="nav-label">Home</div></div>
+    <div class="nav-item active" onclick="goSchemes()"><div class="nav-icon">🎓</div><div class="nav-label">Schemes</div></div>
+    <div class="nav-item" onclick="goDocuments()"><div class="nav-icon">📄</div><div class="nav-label">Documents</div></div>
+    <div class="nav-item" onclick="goSupport()"><div class="nav-icon">⊙</div><div class="nav-label">Support</div></div>
+  </div>
+</div>
+
+<!-- PMS PAGE 1: SCHEME OVERVIEW -->
+<div class="screen" id="s-pms">
+  <div class="detail-head">
+    <div class="back-btn-row"><button class="back-btn" onclick="goBack()">← All schemes</button></div>
+    <div class="detail-badge">SC · Post-Matric · SJE Dept.</div>
+    <div class="detail-title">Post-Matric Scholarship</div>
+    <div class="detail-sub">Fee reimbursement + monthly allowance</div>
+  </div>
+  <div class="scroll" style="padding-bottom:90px;">
+    <div style="height:12px;"></div>
+    <div class="agent-tip">
+      <div class="agent-dot"></div>
+      <div class="agent-text"><strong>Priya, good news —</strong> you qualify for this scheme. But your income certificate is expiring soon. Act before you apply.</div>
+    </div>
+    <div class="prog-row"><span class="prog-label">Your application readiness</span><span class="prog-val">3 of 8 ready</span></div>
+    <div class="prog-wrap"><div class="prog-fill" style="width:37%"></div></div>
+
+    <div class="step-card" onclick="toggleStep('step1')">
+      <div class="step-head">
+        <div class="step-num n-orange">1</div>
+        <div><div class="step-label">Is this for me?</div><div class="step-sub">You qualify — here's why</div></div>
+        <div class="step-arrow" id="arr1">›</div>
+      </div>
+      <div class="step-body" id="step1" style="display:none;">
+        <div class="story-text">SC category · income under ₹2.5 lakh · Class 11 or above · Rajasthan domicile. <strong>All four conditions match for you.</strong></div>
+        <div class="tags"><span class="tag tag-green">SC ✓</span><span class="tag tag-green">Income ✓</span><span class="tag tag-green">Class 12 ✓</span><span class="tag tag-green">Rajasthan ✓</span></div>
+      </div>
+    </div>
+
+    <div class="step-card" onclick="toggleStep('step2')">
+      <div class="step-head">
+        <div class="step-num n-blue">2</div>
+        <div><div class="step-label">What will I get?</div><div class="step-sub">Your actual benefit</div></div>
+        <div class="step-arrow" id="arr2">›</div>
+      </div>
+      <div class="step-body" id="step2" style="display:none;">
+        <div class="benefit-row">
+          <div class="benefit-chip"><div class="benefit-val">Full fees</div><div class="benefit-lbl">Reimbursed</div></div>
+          <div class="benefit-chip"><div class="benefit-val">₹1,200</div><div class="benefit-lbl">Per month</div></div>
+          <div class="benefit-chip"><div class="benefit-val">Direct</div><div class="benefit-lbl">To your bank</div></div>
+        </div>
+        <div class="story-text">Your <strong>entire tuition fee</strong> is paid back. If you stay in a hostel you also get <strong>₹1,200 every month</strong> deposited straight to your account.</div>
+      </div>
+    </div>
+
+    <div class="step-card" onclick="goDocuments()">
+      <div class="step-head">
+        <div class="step-num n-red">3</div>
+        <div><div class="step-label">What do I need?</div><div class="step-sub">2 documents need attention</div></div>
+        <div class="step-arrow">›</div>
+      </div>
+    </div>
+
+    <div class="step-card" onclick="toggleStep('step4')">
+      <div class="step-head">
+        <div class="step-num n-green">4</div>
+        <div><div class="step-label">How do I apply?</div><div class="step-sub">3 steps, takes 20 minutes</div></div>
+        <div class="step-arrow" id="arr4">›</div>
+      </div>
+      <div class="step-body" id="step4" style="display:none;">
+        <div class="story-text"><strong>Step 1:</strong> Login with your SSO ID at sje.rajasthan.gov.in<br><br><strong>Step 2:</strong> Fill the form — it filters to your situation, saves progress as you go.<br><br><strong>Step 3:</strong> Upload documents and submit before the deadline.</div>
+        <div class="tags"><span class="tag tag-navy">Deadline: May 31, 2026</span></div>
+      </div>
+    </div>
+
+    <button class="btn-ghost" onclick="goDocuments()">Check my documents</button>
+  </div>
+  <div class="bottom-nav">
+    <div class="nav-item" onclick="goHome()"><div class="nav-icon">⌂</div><div class="nav-label">Home</div></div>
+    <div class="nav-item active" onclick="goSchemes()"><div class="nav-icon">🎓</div><div class="nav-label">Schemes</div></div>
+    <div class="nav-item" onclick="goDocuments()"><div class="nav-icon">📄</div><div class="nav-label">Documents</div></div>
+    <div class="nav-item" onclick="goSupport()"><div class="nav-icon">⊙</div><div class="nav-label">Support</div></div>
+  </div>
+</div>
+
+<!-- PMS PAGE 2: DOCUMENTS CHECKLIST -->
+<div class="screen" id="s-documents">
+  <div class="detail-head">
+    <div class="back-btn-row"><button class="back-btn" onclick="goBack()">← Post-Matric Scholarship</button></div>
+    <div class="detail-badge">Documents needed</div>
+    <div class="detail-title">What do I need?</div>
+    <div class="detail-sub">Check what's ready before you apply</div>
+  </div>
+  <div class="scroll" style="padding-bottom:90px;">
+    <div style="height:12px;"></div>
+    <div class="agent-tip">
+      <div class="agent-dot"></div>
+      <div class="agent-text"><strong>2 things need your attention.</strong> Fix these first — your application will stall without them.</div>
+    </div>
+    <div class="prog-row"><span class="prog-label">Your readiness</span><span class="prog-val">3 of 8 ready</span></div>
+    <div class="prog-wrap"><div class="prog-fill" style="width:37%"></div></div>
+
+    <div class="check-item" onclick="goServiceDetail('income')">
+      <div class="check-box cb-warn">!</div>
+      <div><div class="check-title">Income certificate</div><div class="check-sub cs-alert">Expires in 3 months — renew at Tonk Tehsil office</div></div>
+      <div class="check-right">›</div>
+    </div>
+    <div class="check-item" onclick="goServiceDetail('caste')">
+      <div class="check-box cb-warn">!</div>
+      <div><div class="check-title">Caste certificate (SC)</div><div class="check-sub cs-warn">Not verified in backend — visit SDO office, Tonk</div></div>
+      <div class="check-right">›</div>
+    </div>
+    <div class="check-item">
+      <div class="check-box cb-done">✓</div>
+      <div><div class="check-title">Jan Aadhaar card</div><div class="check-sub cs-ok">Linked and verified</div></div>
+    </div>
+    <div class="check-item">
+      <div class="check-box cb-done">✓</div>
+      <div><div class="check-title">Aadhaar card</div><div class="check-sub cs-ok">Verified</div></div>
+    </div>
+    <div class="check-item">
+      <div class="check-box cb-done">✓</div>
+      <div><div class="check-title">Bank account (Aadhaar seeded)</div><div class="check-sub cs-ok">Ready for ABPS payment</div></div>
+    </div>
+    <div class="check-item">
+      <div class="check-box"></div>
+      <div><div class="check-title">Domicile certificate</div><div class="check-sub cs-muted">Upload when applying</div></div>
+    </div>
+    <div class="check-item">
+      <div class="check-box"></div>
+      <div><div class="check-title">Marksheet (Class 11)</div><div class="check-sub cs-muted">Upload when applying</div></div>
+    </div>
+    <div class="check-item">
+      <div class="check-box"></div>
+      <div><div class="check-title">Fee receipt from school</div><div class="check-sub cs-muted">Upload when applying</div></div>
+    </div>
+    <button class="btn-primary" style="margin-top:12px;" onclick="goServiceDetail('income')">Fix urgent documents first</button>
+  </div>
+  <div class="bottom-nav">
+    <div class="nav-item" onclick="goHome()"><div class="nav-icon">⌂</div><div class="nav-label">Home</div></div>
+    <div class="nav-item" onclick="goSchemes()"><div class="nav-icon">🎓</div><div class="nav-label">Schemes</div></div>
+    <div class="nav-item active" onclick="goDocuments()"><div class="nav-icon">📄</div><div class="nav-label">Documents</div></div>
+    <div class="nav-item" onclick="goSupport()"><div class="nav-icon">⊙</div><div class="nav-label">Support</div></div>
+  </div>
+</div>
+
+<!-- SERVICE DETAIL -->
+<div class="screen" id="s-svc">
+  <div class="detail-head">
+    <div class="back-btn-row"><button class="back-btn" onclick="goBack()">← Documents</button></div>
+    <div class="detail-badge" id="svc-badge">Certificate</div>
+    <div class="detail-title" id="svc-title">Income Certificate</div>
+    <div class="detail-sub" id="svc-time">7 working days</div>
+  </div>
+  <div class="scroll" style="padding-bottom:90px;">
+    <div style="height:12px;"></div>
+    <div id="svc-alert-wrap"></div>
+    <div class="sec-head">What is it?</div>
+    <p id="svc-about" style="font-size:13px;color:var(--text-2);line-height:1.65;margin-bottom:14px;"></p>
+    <div class="sec-head">What to carry</div>
+    <ul id="svc-docs" style="list-style:none;padding:0;margin-bottom:14px;"></ul>
+    <div class="sec-head">Where to go in Tonk</div>
+    <div id="svc-office-card"></div>
+    <button class="btn-ghost" onclick="goChat()">Ask AI assistant ✦</button>
+  </div>
+  <div class="bottom-nav">
+    <div class="nav-item" onclick="goHome()"><div class="nav-icon">⌂</div><div class="nav-label">Home</div></div>
+    <div class="nav-item" onclick="goSchemes()"><div class="nav-icon">🎓</div><div class="nav-label">Schemes</div></div>
+    <div class="nav-item active" onclick="goDocuments()"><div class="nav-icon">📄</div><div class="nav-label">Documents</div></div>
+    <div class="nav-item" onclick="goSupport()"><div class="nav-icon">⊙</div><div class="nav-label">Support</div></div>
+  </div>
+</div>
+
+<!-- SUPPORT -->
+<div class="screen" id="s-support">
+  <div class="topbar"><div class="topbar-left"><div class="logo-mark">USP</div><div><div class="topbar-name">Unified Scholarship Portal</div><div class="topbar-sub">Student Services</div></div></div><div class="lang-pill">हि / EN</div></div>
+  <div class="ai-bar" onclick="goChat()"><div class="ai-pulse"></div><span class="ai-bar-text">Ask the scholarship assistant…</span><span style="color:var(--saffron);">✦</span></div>
+  <div class="scroll">
+    <div class="page-title">Support</div>
+
+    <div class="sec-head">Get help</div>
+    <div class="card" onclick="goChat()">
+      <div class="card-top"><span class="badge badge-saffron">AI guided</span><span style="font-size:16px;color:var(--text-3);">›</span></div>
+      <div class="card-title">Raise a grievance</div>
+      <div class="card-sub">Agent maps the right escalation path for you</div>
+    </div>
+    <div class="card" onclick="goChat()">
+      <div class="card-top"><span class="badge badge-navy">ABPS issue</span><span style="font-size:16px;color:var(--text-3);">›</span></div>
+      <div class="card-title">Payment not received?</div>
+      <div class="card-sub">Diagnose Aadhaar–bank seeding failure</div>
+    </div>
+    <div class="card" onclick="goChat()">
+      <div class="card-top"><span class="badge badge-navy">Office visit</span><span style="font-size:16px;color:var(--text-3);">›</span></div>
+      <div class="card-title">Find the right office in Tonk</div>
+      <div class="card-sub">Agent shares location, officer name and timings</div>
+    </div>
+
+    <div class="sec-head">Previous grievances</div>
+    <div class="track-item">
+      <div class="status-dot sd-pending"></div>
+      <div>
+        <div class="track-title">Caste certificate objection</div>
+        <div class="track-sub">Raised 12 May 2026 · Awaiting response from SDO office</div>
+      </div>
+    </div>
+    <div class="track-item">
+      <div class="status-dot sd-ok"></div>
+      <div>
+        <div class="track-title">Income certificate mismatch</div>
+        <div class="track-sub">Raised 3 Apr 2026 · Resolved by Tehsildar, Tonk</div>
+      </div>
+    </div>
+
+  </div>
+  <div class="bottom-nav">
+    <div class="nav-item" onclick="goHome()"><div class="nav-icon">⌂</div><div class="nav-label">Home</div></div>
+    <div class="nav-item" onclick="goSchemes()"><div class="nav-icon">🎓</div><div class="nav-label">Schemes</div></div>
+    <div class="nav-item" onclick="goDocuments()"><div class="nav-icon">📄</div><div class="nav-label">Documents</div></div>
+    <div class="nav-item active" onclick="goSupport()"><div class="nav-icon">⊙</div><div class="nav-label">Support</div></div>
+  </div>
+</div>
+
+<!-- AI CHAT -->
+<div class="screen" id="s-chat">
+  <div class="chat-header">
+    <button onclick="goBack()" style="background:none;border:none;cursor:pointer;font-size:20px;color:var(--saffron);">←</button>
+    <div class="logo-mark">USP</div>
+    <div><div style="font-size:13px;font-weight:600;color:var(--navy);">Scholarship Assistant</div><div style="font-size:10px;color:var(--green);">● Live · AI Powered</div></div>
+  </div>
+  <div class="chat-wrap">
+    <div class="chat-messages" id="chat-messages">
+      <div class="msg bot">Namaste Priya! I can help you with your Post-Matric Scholarship — documents, eligibility, office locations, or payment issues.<br><br>What do you need?</div>
+    </div>
+    <div class="sq-wrap" id="sq-wrap">
+      <button class="sq-btn" onclick="sendSuggested('Am I eligible for PMS?')">Am I eligible?</button>
+      <button class="sq-btn" onclick="sendSuggested('Where do I get my income certificate renewed in Tonk?')">Income cert office?</button>
+      <button class="sq-btn" onclick="sendSuggested('My payment was not received. What do I do?')">Payment not received?</button>
+      <button class="sq-btn" onclick="sendSuggested('Where is the SDO office in Tonk for caste certificate?')">Caste cert office?</button>
+    </div>
+    <div class="chat-input-wrap">
+      <textarea class="chat-input" id="chat-input" rows="1" placeholder="Type in Hindi or English…"></textarea>
+      <button class="chat-send" id="send-btn" onclick="sendMessage()">➤</button>
+    </div>
+  </div>
+</div>
+
+</div>
+<script>
+const OFFICES = {
+  income: { name:'Tonk Tehsil Office', address:'Collectorate Campus, Tonk, Rajasthan 304001', officer:'Tehsildar, Tonk', timing:'10am – 5pm, Mon–Sat', maps:'https://maps.google.com/?q=Tonk+Tehsil+Office+Rajasthan' },
+  caste:  { name:'SDO Office, Tonk', address:'Civil Lines, Tonk, Rajasthan 304001', officer:'Sub-Divisional Officer, Tonk', timing:'10am – 5pm, Mon–Sat', maps:'https://maps.google.com/?q=SDO+Office+Civil+Lines+Tonk+Rajasthan', alt:'e-Mitra Kiosk, Tonk Bus Stand' },
+  emitra: { name:'e-Mitra Kiosk — Tonk Bus Stand', address:'Bus Stand Area, Tonk, Rajasthan 304001', officer:'e-Mitra operator', timing:'9am – 6pm, Mon–Sat', maps:'https://maps.google.com/?q=Tonk+Bus+Stand+Rajasthan' },
+  dlo:    { name:'DLO-SJE Office, Tonk', address:'District Collectorate, Tonk, Rajasthan 304001', officer:'District Level Officer, Social Justice & Empowerment', timing:'10am – 5pm, Mon–Fri', maps:'https://maps.google.com/?q=District+Collectorate+Tonk+Rajasthan' },
+  bank:   { name:'SBI Branch, Tonk', address:'Station Road, Tonk, Rajasthan 304001', officer:'Branch Manager', timing:'10am – 4pm, Mon–Sat', maps:'https://maps.google.com/?q=SBI+Branch+Tonk+Rajasthan' }
+};
+
+const SERVICES = {
+  income:{ badge:'⚠ Expiring soon', title:'Income Certificate', time:'7 working days · Renew urgently', about:"This certificate confirms your family's annual income. It must be valid at the time of application AND at verification. If it expires mid-process, your application stalls silently — so renew it now.", docs:['Aadhaar card','Ration card','Self-declaration of income','Recent electricity or water bill'], office:'income', alert:{type:'warn',text:'<strong>Renew now:</strong> At least 2 months before applying. Expiry mid-process is the most common silent block.'} },
+  caste:{  badge:'SC Certificate', title:'Caste Certificate (SC)', time:'10–15 working days', about:'This certificate must not only exist on paper — it must be present in the government backend database. If it is absent in the backend, your application will be silently rejected even if your physical certificate is valid.', docs:["Aadhaar card","Father's caste certificate or affidavit","School transfer certificate","Ration card"], office:'caste', alt:'emitra', alert:{type:'danger',text:'<strong>Check backend:</strong> A certificate that exists on paper but not in the backend will silently reject your application.'} }
+};
+
+let prev='s-home';
+let hist=[];
+
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
+function goHome(){prev='s-home';show('s-home');}
+function goSchemes(){prev='s-schemes';show('s-schemes');}
+function goDocuments(){prev=document.querySelector('.screen.active')?.id||'s-home';show('s-documents');}
+function goSupport(){prev='s-support';show('s-support');}
+function goChat(){prev=document.querySelector('.screen.active')?.id||'s-home';show('s-chat');}
+function goBack(){show(prev||'s-home');}
+function goPMS(){prev=document.querySelector('.screen.active')?.id||'s-home';show('s-pms');}
+
+function toggleStep(id){
+  const el=document.getElementById(id);
+  const arrId='arr'+id.replace('step','');
+  const arr=document.getElementById(arrId);
+  const open=el.style.display==='block';
+  el.style.display=open?'none':'block';
+  if(arr) arr.textContent=open?'›':'↓';
+}
+
+function makeOfficeCard(key, showAlt){
+  const o=OFFICES[key];
+  if(!o) return '';
+  let altHtml='';
+  if(showAlt && SERVICES[key] && SERVICES[key].alt){
+    const a=OFFICES[SERVICES[key].alt];
+    if(a) altHtml=`<div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border);font-size:11px;color:var(--text-3);">Alternative: ${a.name} · ${a.timing}</div>`;
+  }
+  return `<div style="background:var(--white);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:12px;">
+    <div style="background:var(--navy);padding:10px 14px;"><div style="font-size:13px;font-weight:600;color:#fff;">${o.name}</div></div>
+    <div style="padding:10px 14px;">
+      <div style="font-size:12px;color:var(--text-2);margin-bottom:3px;">📍 ${o.address}</div>
+      <div style="font-size:12px;color:var(--text-2);margin-bottom:3px;">👤 ${o.officer}</div>
+      <div style="font-size:12px;color:var(--text-2);">🕐 ${o.timing}</div>
+      ${altHtml}
+      <div style="display:flex;gap:7px;margin-top:10px;">
+        <button onclick="copyAddr('${o.address}')" style="flex:1;padding:8px;border-radius:10px;font-size:12px;font-weight:600;cursor:pointer;background:var(--bg);color:var(--navy);border:1px solid var(--border);font-family:'Noto Sans',sans-serif;">Copy address</button>
+        <button onclick="openMaps('${o.maps}')" style="flex:1;padding:8px;border-radius:10px;font-size:12px;font-weight:600;cursor:pointer;background:var(--saffron);color:#fff;border:none;font-family:'Noto Sans',sans-serif;">Open in Maps</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function copyAddr(addr){
+  navigator.clipboard.writeText(addr).then(()=>{alert('Address copied!');}).catch(()=>{alert(addr);});
+}
+function openMaps(url){window.open(url,'_blank');}
+
+function goServiceDetail(id){
+  prev=document.querySelector('.screen.active')?.id||'s-documents';
+  const s=SERVICES[id];if(!s)return;
+  document.getElementById('svc-badge').textContent=s.badge;
+  document.getElementById('svc-title').textContent=s.title;
+  document.getElementById('svc-time').textContent=s.time;
+  document.getElementById('svc-about').textContent=s.about;
+  document.getElementById('svc-docs').innerHTML=s.docs.map(d=>`<li style="font-size:12px;color:var(--text-2);padding:6px 0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;"><span style="width:6px;height:6px;border-radius:50%;background:var(--saffron);display:inline-block;flex-shrink:0;"></span>${d}</li>`).join('');
+  document.getElementById('svc-office-card').innerHTML=makeOfficeCard(s.office, true);
+  const aw=document.getElementById('svc-alert-wrap');
+  if(s.alert){const cls=s.alert.type==='danger'?'alert-danger':'alert-warn';const ic=s.alert.type==='danger'?'!':'⚠';aw.innerHTML=`<div class="alert-box ${cls}"><span class="alert-icon">${ic}</span><div class="alert-text">${s.alert.text}</div></div>`;}
+  else aw.innerHTML='';
+  show('s-svc');
+}
+
+function makeLocationBubble(key){
+  const o=OFFICES[key];
+  if(!o) return null;
+  const el=document.createElement('div');
+  el.className='loc-card';
+  el.innerHTML=`<div class="loc-head"><div class="loc-name">📍 ${o.name}</div></div>
+  <div class="loc-body">
+    <div class="loc-row">${o.address}</div>
+    <div class="loc-row"><span>Officer: </span>${o.officer}</div>
+    <div class="loc-row"><span>Timing: </span>${o.timing}</div>
+    <div class="loc-actions">
+      <button class="loc-btn loc-btn-copy" onclick="copyAddr('${o.address}')">Copy address</button>
+      <button class="loc-btn loc-btn-map" onclick="openMaps('${o.maps}')">Open in Maps</button>
+    </div>
+  </div>`;
+  return el;
+}
+
+function detectOffice(text){
+  const t=text.toLowerCase();
+  if(t.includes('income cert')||t.includes('tehsil')) return 'income';
+  if(t.includes('caste cert')||t.includes('sdo')) return 'caste';
+  if(t.includes('e-mitra')||t.includes('jan aadhaar')||t.includes('janaadha')) return 'emitra';
+  if(t.includes('grievance')||t.includes('dlo')||t.includes('payment not')||t.includes('disburs')) return 'dlo';
+  if(t.includes('bank')||t.includes('seeding')||t.includes('abps')) return 'bank';
+  return null;
+}
+
+async function sendMessage(){
+  const inp=document.getElementById('chat-input');
+  const msg=inp.value.trim();if(!msg)return;
+  inp.value='';
+  document.getElementById('sq-wrap').style.display='none';
+  appendMsg(msg,'user');
+  hist.push({role:'user',content:msg});
+  const t=appendMsg('Typing…','bot typing');
+  document.getElementById('send-btn').disabled=true;
+  try{
+    /* ============================================================
+       API KEY SETUP — READ THIS BEFORE DEPLOYING
+       ============================================================
+       This app uses the Anthropic Claude API for the AI assistant.
+
+       TO MAKE THE CHAT WORK on Replit or Vercel:
+       1. Get your API key from: https://console.anthropic.com
+       2. Replace YOUR_API_KEY_HERE below with your actual key
+       3. Example: "sk-ant-api03-..."
+
+       NOTE: This exposes your key publicly — fine for a demo,
+       but do not use a production key here.
+       ============================================================ */
+    const API_KEY = "YOUR_API_KEY_HERE";
+    const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':API_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({
+      model:'claude-sonnet-4-20250514',max_tokens:600,
+      system:`You are a scholarship assistant helping Priya Meena — SC category, Class 12, Tonk, Rajasthan — with her Post-Matric Scholarship (PMS) application.
+
+STRICT RESPONSE RULES — follow these exactly:
+- Never write a paragraph. Always use short lines.
+- Maximum 4 lines per response.
+- Each line = one clear fact or action.
+- Lead with the most important thing first.
+- Use line breaks between points.
+- Never use bullet symbols like • or -.
+- If asked for a location, respond with ONLY: LOCATION:[key] where key is one of: income, caste, emitra, dlo, bank. Nothing else.
+- If asked what documents are needed, list max 3 at a time.
+- Speak directly to Priya. Keep it warm and simple.
+
+OFFICE KNOWLEDGE:
+income cert → Tonk Tehsil Office, Collectorate Campus. Officer: Tehsildar. 10am-5pm Mon-Sat.
+caste cert → SDO Office, Civil Lines, Tonk. Or e-Mitra kiosk, Tonk Bus Stand.
+Jan Aadhaar → e-Mitra Kiosk, Tonk Bus Stand. 9am-6pm.
+bank seeding → SBI Branch, Station Road, Tonk. 10am-4pm.
+grievance/payment → DLO-SJE Office, District Collectorate, Tonk.
+
+KEY FACTS:
+Income cert expires in 3 months — renew urgently.
+Caste cert must exist in backend, not just on paper.
+Bank account must be Aadhaar-seeded for ABPS payment.
+Deadline: May 31 2026. Apply at sje.rajasthan.gov.in via SSO ID.`,
+      messages:hist
+    })});
+    const d=await r.json();
+    let rep=d.content?.[0]?.text||'Sorry, could not process that. Try again.';
+    t.remove();
+
+    const locMatch=rep.match(/LOCATION:\[?(\w+)\]?/i);
+    if(locMatch){
+      const key=locMatch[1].toLowerCase();
+      const card=makeLocationBubble(key);
+      if(card){
+        document.getElementById('chat-messages').appendChild(card);
+        document.getElementById('chat-messages').scrollTop=document.getElementById('chat-messages').scrollHeight;
+      }
+    } else {
+      const officeKey=detectOffice(rep);
+      appendMsg(rep,'bot');
+      if(officeKey){
+        setTimeout(()=>{
+          const card=makeLocationBubble(officeKey);
+          if(card){document.getElementById('chat-messages').appendChild(card);document.getElementById('chat-messages').scrollTop=document.getElementById('chat-messages').scrollHeight;}
+        },400);
+      }
+    }
+    hist.push({role:'assistant',content:rep});
+  }catch(e){t.remove();appendMsg('Connection error. Please try again.','bot');}
+  document.getElementById('send-btn').disabled=false;
+}
+
+function appendMsg(text,cls){
+  const m=document.getElementById('chat-messages');
+  const el=document.createElement('div');
+  el.className='msg '+cls;
+  el.innerHTML=text.replace(/\n/g,'<br>');
+  m.appendChild(el);m.scrollTop=m.scrollHeight;return el;
+}
+function sendSuggested(t){document.getElementById('chat-input').value=t;sendMessage();}
+document.getElementById('chat-input').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();}});
+</script>
+</body>
+</html>
