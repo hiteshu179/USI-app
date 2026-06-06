@@ -633,7 +633,54 @@ function detectOffice(text){
   return null;
 }
 
-async function sendMessage(){
+const MOCK_RESPONSES = [
+  { keys:['eligible','qualify','suit','criteria','who can'],
+    reply:'Yes Priya, you qualify for PMS.\n\nSC category ✓\nFamily income under ₹2.5 lakh ✓\nClass 12 enrolled ✓\nRajasthan domicile ✓' },
+  { keys:['what will i get','benefit','money','amount','how much','get from'],
+    reply:'Two benefits from PMS:\n\nFull tuition fee reimbursement — paid directly to your school.\n₹1,200 every month — if you stay in a hostel.' },
+  { keys:['income cert','income certificate','renew income','tehsil'],
+    reply:'Your income certificate needs renewal urgently.\n\nGo to Tonk Tehsil Office.\nCarry: Aadhaar, ration card, utility bill.',
+    location:'income' },
+  { keys:['caste cert','caste certificate','sdo','sc cert'],
+    reply:'Your caste certificate must exist in the backend — not just on paper.\n\nGo to SDO Office, Tonk or the e-Mitra kiosk at Tonk Bus Stand.',
+    location:'caste' },
+  { keys:['jan aadhaar','janaadhar','e-mitra','emitra','update details'],
+    reply:'Update your Jan Aadhaar at the e-Mitra kiosk.\n\nMake sure name and date of birth match your Aadhaar exactly.',
+    location:'emitra' },
+  { keys:['bank','seeding','abps','account','payment link'],
+    reply:'Your bank account must be linked to Aadhaar for ABPS payment.\n\nVisit your nearest bank branch in Tonk to seed your Aadhaar.',
+    location:'bank' },
+  { keys:['payment not received','not received','money not','disburs','not paid'],
+    reply:'Approved scholarships fail at payment when:\n\nAadhaar–bank seeding is wrong or absent.\nBank account is closed.\n\nVisit DLO-SJE office in Tonk to escalate.',
+    location:'dlo' },
+  { keys:['grievance','complaint','escalate','raise','objection'],
+    reply:'To raise a grievance:\n\nGo to DLO-SJE Office, District Collectorate, Tonk.\nOfficer: District Level Officer, SJE.\nTiming: 10am–5pm, Mon–Fri.',
+    location:'dlo' },
+  { keys:['apply','how to apply','application','submit','start'],
+    reply:'To apply for PMS:\n\nStep 1: Login at sje.rajasthan.gov.in with your SSO ID.\nStep 2: Fill the form — it saves your progress.\nStep 3: Upload documents and submit before May 31, 2026.' },
+  { keys:['document','what do i need','checklist','papers','certificate'],
+    reply:'Documents needed for PMS:\n\nIncome certificate (valid) ⚠ yours is expiring\nCaste certificate (SC) — must be in backend\nJan Aadhaar, Aadhaar, bank passbook, marksheet, fee receipt.' },
+  { keys:['deadline','last date','when','date','time'],
+    reply:'PMS application deadline: May 31, 2026.\n\nApply at sje.rajasthan.gov.in using your SSO ID.\nDon\'t wait — your income cert needs renewal first.' },
+  { keys:['office','where','location','address','go'],
+    reply:'Which office do you need?\n\nIncome cert → Tonk Tehsil Office\nCaste cert → SDO Office, Civil Lines, Tonk\nJan Aadhaar → e-Mitra Kiosk, Tonk Bus Stand\nPayment issue → DLO-SJE, District Collectorate' },
+  { keys:['sso','login','password','account','portal'],
+    reply:'To get your SSO ID:\n\nGo to sso.rajasthan.gov.in\nRegister with your Aadhaar or Jan Aadhaar number.\nUse this ID to login to the scholarship portal.' },
+  { keys:['hello','hi','namaste','helo','hey'],
+    reply:'Namaste Priya! 👋\n\nI can help you with your Post-Matric Scholarship.\nAsk me about eligibility, documents, office locations, or payment issues.' },
+  { keys:['thank','shukriya','dhanyavad'],
+    reply:'You\'re welcome Priya!\n\nIs there anything else you need help with for your PMS scholarship?' },
+];
+
+function getMockResponse(msg){
+  const t = msg.toLowerCase();
+  for(const r of MOCK_RESPONSES){
+    if(r.keys.some(k => t.includes(k))) return r;
+  }
+  return { reply:'I can help you with:\n\nEligibility · Documents needed · Office locations\nHow to apply · Payment issues · Grievances\n\nWhat would you like to know?' };
+}
+
+function sendMessage(){
   const inp=document.getElementById('chat-input');
   const msg=inp.value.trim();if(!msg)return;
   inp.value='';
@@ -642,89 +689,23 @@ async function sendMessage(){
   hist.push({role:'user',content:msg});
   const t=appendMsg('Typing…','bot typing');
   document.getElementById('send-btn').disabled=true;
-  try{
-    /* ============================================================
-       API KEY SETUP — READ THIS BEFORE DEPLOYING
-       ============================================================
-       This app uses the Google Gemini API for the AI assistant.
 
-       TO MAKE THE CHAT WORK on Replit or Vercel:
-       1. Get your free API key from: https://aistudio.google.com
-       2. Click "Get API key" → "Create API key"
-       3. Replace YOUR_API_KEY_HERE below with your actual key
-       4. Example: "AIzaSy..."
-
-       NOTE: This exposes your key publicly — fine for a demo,
-       but do not use a production key here.
-       ============================================================ */
-    const API_KEY = "AQ.Ab8RN6JdGHf2terfAiFAHDS3lywxqZNXYR1UZBrgQnKlAimbsQ";
-    const SYSTEM = `You are a scholarship assistant helping Priya Meena — SC category, Class 12, Tonk, Rajasthan — with her Post-Matric Scholarship (PMS) application.
-
-STRICT RESPONSE RULES — follow these exactly:
-- Never write a paragraph. Always use short lines.
-- Maximum 4 lines per response.
-- Each line = one clear fact or action.
-- Lead with the most important thing first.
-- Use line breaks between points.
-- Never use bullet symbols like • or -.
-- If asked for a location, respond with ONLY: LOCATION:[key] where key is one of: income, caste, emitra, dlo, bank. Nothing else.
-- If asked what documents are needed, list max 3 at a time.
-- Speak directly to Priya. Keep it warm and simple.
-
-OFFICE KNOWLEDGE:
-income cert → Tonk Tehsil Office, Collectorate Campus. Officer: Tehsildar. 10am-5pm Mon-Sat.
-caste cert → SDO Office, Civil Lines, Tonk. Or e-Mitra kiosk, Tonk Bus Stand.
-Jan Aadhaar → e-Mitra Kiosk, Tonk Bus Stand. 9am-6pm.
-bank seeding → SBI Branch, Station Road, Tonk. 10am-4pm.
-grievance/payment → DLO-SJE Office, District Collectorate, Tonk.
-
-KEY FACTS:
-Income cert expires in 3 months — renew urgently.
-Caste cert must exist in backend, not just on paper.
-Bank account must be Aadhaar-seeded for ABPS payment.
-Deadline: May 31 2026. Apply at sje.rajasthan.gov.in via SSO ID.`;
-
-    const prompt = SYSTEM + '\n\nUser message: ' + msg + '\n\nRespond directly to Priya. Keep it short — max 4 lines.';
-    const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${API_KEY}`,{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        contents:[{parts:[{text:prompt}]}]
-      })
-    });
-    const d=await r.json();
-    console.log('Gemini response:', JSON.stringify(d));
-    let rep = '';
-    if(d.candidates && d.candidates[0] && d.candidates[0].content && d.candidates[0].content.parts && d.candidates[0].content.parts[0]){
-      rep = d.candidates[0].content.parts[0].text;
-    } else if(d.error && d.error.message){
-      rep = 'API Error: ' + d.error.message;
-    } else {
-      rep = 'Sorry, I could not process that. Please try again.';
-    }
+  setTimeout(()=>{
     t.remove();
-
-    const locMatch=rep.match(/LOCATION:\[?(\w+)\]?/i);
-    if(locMatch){
-      const key=locMatch[1].toLowerCase();
-      const card=makeLocationBubble(key);
-      if(card){
-        document.getElementById('chat-messages').appendChild(card);
-        document.getElementById('chat-messages').scrollTop=document.getElementById('chat-messages').scrollHeight;
-      }
-    } else {
-      const officeKey=detectOffice(rep);
-      appendMsg(rep,'bot');
-      if(officeKey){
-        setTimeout(()=>{
-          const card=makeLocationBubble(officeKey);
-          if(card){document.getElementById('chat-messages').appendChild(card);document.getElementById('chat-messages').scrollTop=document.getElementById('chat-messages').scrollHeight;}
-        },400);
-      }
+    const match = getMockResponse(msg);
+    appendMsg(match.reply,'bot');
+    hist.push({role:'assistant',content:match.reply});
+    if(match.location){
+      setTimeout(()=>{
+        const card=makeLocationBubble(match.location);
+        if(card){
+          document.getElementById('chat-messages').appendChild(card);
+          document.getElementById('chat-messages').scrollTop=document.getElementById('chat-messages').scrollHeight;
+        }
+      },300);
     }
-    hist.push({role:'assistant',content:rep});
-  }catch(e){t.remove();console.error('Chat error:',e);appendMsg('Error: '+e.message,'bot');}
-  document.getElementById('send-btn').disabled=false;
+    document.getElementById('send-btn').disabled=false;
+  }, 800);
 }
 
 function appendMsg(text,cls){
@@ -744,4 +725,3 @@ document.getElementById('chat-input').addEventListener('keydown',e=>{if(e.key===
 </script>
 </body>
 </html>
-  
