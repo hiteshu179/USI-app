@@ -685,7 +685,7 @@ Bank account must be Aadhaar-seeded for ABPS payment.
 Deadline: May 31 2026. Apply at sje.rajasthan.gov.in via SSO ID.`;
 
     const prompt = SYSTEM + '\n\nUser message: ' + msg + '\n\nRespond directly to Priya. Keep it short — max 4 lines.';
-    const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`,{
+    const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${API_KEY}`,{
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
@@ -744,3 +744,4 @@ document.getElementById('chat-input').addEventListener('keydown',e=>{if(e.key===
 </script>
 </body>
 </html>
+  
