@@ -233,8 +233,57 @@ html,body{height:100%;background:#EDE8DC;display:flex;align-items:center;justify
 <body>
 <div id="app">
 
+<!-- LOGIN -->
+<div class="screen active" id="s-login">
+  <div style="background:var(--navy);padding:28px 24px 24px;text-align:center;flex-shrink:0;">
+    <div style="width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,0.1);border:1.5px solid rgba(255,255,255,0.35);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;">
+      <svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
+        <circle cx="16" cy="16" r="14" fill="none" stroke="#FAC775" stroke-width="1.5"/>
+        <circle cx="16" cy="16" r="2.5" fill="#FAC775"/>
+        <g stroke="#FAC775" stroke-width="1.2">
+          <line x1="16" y1="2" x2="16" y2="6"/>
+          <line x1="16" y1="26" x2="16" y2="30"/>
+          <line x1="2" y1="16" x2="6" y2="16"/>
+          <line x1="26" y1="16" x2="30" y2="16"/>
+          <line x1="5.5" y1="5.5" x2="8.3" y2="8.3"/>
+          <line x1="23.7" y1="23.7" x2="26.5" y2="26.5"/>
+          <line x1="5.5" y1="26.5" x2="8.3" y2="23.7"/>
+          <line x1="23.7" y1="8.3" x2="26.5" y2="5.5"/>
+          <line x1="16" y1="2" x2="16" y2="30" transform="rotate(22.5 16 16)"/>
+          <line x1="16" y1="2" x2="16" y2="30" transform="rotate(45 16 16)"/>
+          <line x1="16" y1="2" x2="16" y2="30" transform="rotate(67.5 16 16)"/>
+        </g>
+      </svg>
+    </div>
+    <div style="font-size:10px;letter-spacing:1.5px;color:rgba(255,255,255,0.6);text-transform:uppercase;margin-bottom:4px;">Government of Andhra Pradesh</div>
+    <div style="font-size:16px;font-weight:600;color:#fff;">Unified Citizen Services Portal</div>
+  </div>
+  <div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:24px;overflow-y:auto;background:var(--bg);">
+    <div style="background:var(--white);border:1px solid var(--border);border-radius:16px;padding:20px;">
+      <div style="font-size:14px;font-weight:600;color:var(--navy);margin-bottom:4px;">Login with Aadhaar</div>
+      <div style="font-size:12px;color:var(--text-3);margin-bottom:16px;">Enter your Aadhaar number to receive an OTP</div>
+      <div class="form-group">
+        <span class="form-label">Aadhaar number</span>
+        <input class="form-input" id="login-aadhaar" type="tel" maxlength="9" placeholder="9-digit Aadhaar number" inputmode="numeric">
+      </div>
+      <div id="login-otp-section" style="display:none;">
+        <div class="form-group">
+          <span class="form-label">Enter OTP</span>
+          <input class="form-input" id="login-otp" type="tel" maxlength="6" placeholder="6-digit OTP" inputmode="numeric">
+          <div class="form-hint">OTP sent to your Aadhaar-linked mobile number · for this demo, enter any digits</div>
+        </div>
+      </div>
+      <button class="btn-primary" id="login-otp-btn" style="margin-top:4px;" onclick="sendLoginOTP()">Send OTP</button>
+      <button class="btn-primary" id="login-verify-btn" style="display:none;margin-top:4px;" onclick="verifyLogin()">Verify &amp; Login</button>
+    </div>
+    <div style="text-align:center;margin-top:16px;font-size:11px;color:var(--text-3);display:flex;align-items:center;justify-content:center;gap:5px;">
+      <i class="ti ti-shield-lock"></i> Secured by Aadhaar e-KYC
+    </div>
+  </div>
+</div>
+
 <!-- HOME -->
-<div class="screen active" id="s-home">
+<div class="screen" id="s-home">
   <div class="topbar">
     <div class="topbar-left"><div class="logo-mark">UCS</div><div><div class="topbar-name">Unified Citizen Services Portal</div><div class="topbar-sub">Farmer Welfare Services</div></div></div>
     <div class="topbar-right">
@@ -772,7 +821,11 @@ html,body{height:100%;background:#EDE8DC;display:flex;align-items:center;justify
     </div>
 
     <div class="sec-head">Account actions</div>
-    <div class="profile-row">
+    <div class="profile-row" onclick="resetCropApplication()">
+      <div class="profile-row-icon"><i class="ti ti-refresh"></i></div>
+      <div style="flex:1;"><div class="profile-row-title">Reset Crop Insurance demo</div><div class="profile-row-sub">Mark application as not yet submitted</div></div>
+    </div>
+    <div class="profile-row" onclick="logout()">
       <div class="profile-row-icon"><i class="ti ti-logout"></i></div>
       <div style="flex:1;"><div class="profile-row-title">Logout</div><div class="profile-row-sub">End this session</div></div>
     </div>
@@ -830,6 +883,31 @@ const SERVICES = {
 let prev='s-home';
 let hist=[];
 
+function sendLoginOTP(){
+  const aad=document.getElementById('login-aadhaar').value.trim();
+  if(!/^\d{9}$/.test(aad)){ alert('Please enter a valid 9-digit Aadhaar number'); return; }
+  document.getElementById('login-otp-section').style.display='block';
+  document.getElementById('login-otp-btn').style.display='none';
+  document.getElementById('login-verify-btn').style.display='block';
+}
+
+function verifyLogin(){
+  const otp=document.getElementById('login-otp').value.trim();
+  if(!otp){ alert('Please enter the OTP'); return; }
+  prev='s-home';
+  show('s-home');
+}
+
+function logout(){
+  document.getElementById('login-aadhaar').value='';
+  document.getElementById('login-otp').value='';
+  document.getElementById('login-otp-section').style.display='none';
+  document.getElementById('login-otp-btn').style.display='block';
+  document.getElementById('login-verify-btn').style.display='none';
+  prev='s-home';
+  show('s-login');
+}
+
 function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
 function goHome(){prev='s-home';show('s-home');}
 function goSchemes(){prev='s-schemes';show('s-schemes');}
@@ -879,6 +957,39 @@ function markCropSubmitted(){
   if(progFill){ progFill.style.width='100%'; }
   const cta=document.getElementById('cropdocs-cta');
   if(cta){ cta.textContent='View submitted application'; cta.onclick=()=>show('s-cropsuccess'); }
+}
+
+function resetCropApplication(){
+  cropApplied=false;
+  // Reset Schemes page card
+  const badge=document.getElementById('crop-badge');
+  if(badge){ badge.textContent='Eligible · Open now'; badge.className='badge badge-green'; }
+  const sub=document.getElementById('crop-card-sub');
+  if(sub){ sub.textContent='Zero-premium crop insurance · Enrolment closes before Kharif sowing'; }
+  // Reset crop overview page
+  const tip=document.getElementById('crop-agent-tip');
+  if(tip){ tip.innerHTML='<div class="agent-dot"></div><div class="agent-text"><strong>Venkata, this is open now —</strong> you\'re eligible based on your land records. Enrolment closes before Kharif sowing, so it\'s worth checking soon.</div>'; }
+  const step3sub=document.getElementById('crop-step3-sub');
+  if(step3sub){ step3sub.textContent='3 of 4 ready — 1 step left'; }
+  // Reset readiness checklist
+  const ecropItem=document.getElementById('cropdocs-ecrop-box');
+  if(ecropItem){ ecropItem.className='check-box cb-warn'; ecropItem.innerHTML='<i class="ti ti-alert-triangle" style="font-size:12px;"></i>'; }
+  const ecropSub=document.getElementById('cropdocs-ecrop-sub');
+  if(ecropSub){ ecropSub.className='check-sub cs-alert'; ecropSub.textContent='Not done — fill the Crop Insurance form below'; }
+  const progVal=document.getElementById('cropdocs-prog-val');
+  if(progVal){ progVal.textContent='3 of 4 ready'; }
+  const progFill=document.getElementById('cropdocs-prog-fill');
+  if(progFill){ progFill.style.width='75%'; }
+  const cta=document.getElementById('cropdocs-cta');
+  if(cta){ cta.textContent='Fill Crop Insurance form'; cta.onclick=()=>goCropForm(); }
+  // Reset form fields to defaults
+  const season=document.getElementById('cf-season');
+  if(season){ season.value='Kharif 2026'; }
+  const crop=document.getElementById('cf-crop');
+  if(crop){ crop.value='Paddy'; }
+  const area=document.getElementById('cf-area');
+  if(area){ area.value='2'; }
+  alert('Crop Insurance demo has been reset — application now shows as not submitted.');
 }
 
 function goProfile(){prev=document.querySelector('.screen.active')?.id||'s-home';show('s-profile');}
