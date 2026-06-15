@@ -3,21 +3,22 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
-<title>Unified Scholarship Portal</title>
+<title>Unified Citizen Services Portal</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.35.0/tabler-icons.min.css"/>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 :root{
-  --saffron:#E8640A;--saffron-light:#FDF0E6;--saffron-mid:#F5A56B;
-  --green:#1A6B3C;--green-light:#E6F3EC;
-  --navy:#1A2E4A;--navy-light:#EEF2F7;
+  --saffron:#BA7517;--saffron-light:#FAEEDA;--saffron-mid:#FAC775;
+  --green:#3B6D11;--green-light:#EAF3DE;
+  --navy:#3B4423;--navy-light:#F1EFE8;
   --text:#1A1A1A;--text-2:#555;--text-3:#888;
-  --border:#E0E0E0;--white:#fff;--bg:#F4F5F7;
+  --border:#E3DFD3;--white:#fff;--bg:#F7F4EC;
   --red:#C0392B;--red-light:#FDECEA;
-  --amber:#B8860B;--amber-light:#FEF9E7;
-  --placeholder:#B0B8C4;
+  --amber:#9C5700;--amber-light:#FEF9E7;
+  --placeholder:#C2BCAE;
 }
-html,body{height:100%;background:#e8eaed;display:flex;align-items:center;justify-content:center;font-family:'Noto Sans',sans-serif;}
+html,body{height:100%;background:#EDE8DC;display:flex;align-items:center;justify-content:center;font-family:'Noto Sans',sans-serif;}
 #app{width:390px;height:844px;background:var(--bg);border-radius:40px;overflow:hidden;display:flex;flex-direction:column;position:relative;box-shadow:0 20px 60px rgba(0,0,0,0.18);}
 .screen{display:none;flex-direction:column;height:100%;overflow:hidden;}
 .screen.active{display:flex;}
@@ -29,6 +30,14 @@ html,body{height:100%;background:#e8eaed;display:flex;align-items:center;justify
 .topbar-name{font-size:13px;font-weight:600;color:var(--navy);}
 .topbar-sub{font-size:10px;color:var(--text-3);margin-top:1px;}
 .lang-pill{font-size:11px;padding:4px 10px;border-radius:20px;border:1px solid var(--border);background:var(--bg);color:var(--text-2);cursor:pointer;}
+.topbar-right{display:flex;align-items:center;gap:8px;}
+.profile-btn{width:30px;height:30px;border-radius:50%;background:var(--navy-light);color:var(--navy);display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;border:none;flex-shrink:0;}
+.profile-btn:hover{background:var(--navy);color:#fff;}
+.profile-avatar-lg{width:56px;height:56px;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:600;flex-shrink:0;}
+.profile-row{display:flex;align-items:center;gap:9px;padding:12px 14px;background:var(--white);border-radius:12px;border:1px solid var(--border);margin-bottom:8px;cursor:pointer;}
+.profile-row-icon{width:34px;height:34px;border-radius:10px;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:17px;color:var(--navy);flex-shrink:0;}
+.profile-row-title{font-size:13px;font-weight:500;color:var(--navy);}
+.profile-row-sub{font-size:11px;color:var(--text-3);margin-top:2px;}
 
 /* AI BAR */
 .ai-bar{margin:10px 14px 0;background:var(--white);border:1px solid var(--border);border-radius:14px;padding:10px 14px;display:flex;align-items:center;gap:8px;cursor:pointer;transition:border-color .2s;flex-shrink:0;}
@@ -89,8 +98,20 @@ html,body{height:100%;background:#e8eaed;display:flex;align-items:center;justify
 .prog-row{display:flex;justify-content:space-between;margin-bottom:5px;}
 .prog-label{font-size:11px;color:var(--text-3);}
 .prog-val{font-size:11px;font-weight:600;color:var(--saffron);}
-.prog-wrap{background:#e8eaed;border-radius:4px;height:6px;margin-bottom:14px;}
+.prog-wrap{background:#EDE8DC;border-radius:4px;height:6px;margin-bottom:14px;}
 .prog-fill{height:6px;border-radius:4px;background:var(--saffron);}
+
+/* STAGE TRACKER */
+.stage-tracker{display:flex;margin:4px 0 18px;padding:0 2px;}
+.stage{flex:1;display:flex;flex-direction:column;align-items:center;position:relative;}
+.stage:not(:first-child)::before{content:'';position:absolute;top:12px;right:50%;width:100%;height:2px;background:var(--border);z-index:0;}
+.stage.stage-line-done:not(:first-child)::before{background:var(--green);}
+.stage-dot{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;z-index:1;background:var(--white);color:var(--text-3);border:1.5px solid var(--border);}
+.stage-done .stage-dot{background:var(--green);color:#fff;border-color:var(--green);}
+.stage-active .stage-dot{background:var(--saffron);color:#fff;border-color:var(--saffron);}
+.stage-label{font-size:9px;color:var(--text-3);margin-top:6px;text-align:center;line-height:1.3;padding:0 2px;}
+.stage-active .stage-label{color:var(--saffron);font-weight:600;}
+.stage-done .stage-label{color:var(--green);font-weight:500;}
 
 /* STEP CARDS */
 .step-card{background:var(--white);border-radius:14px;border:1px solid var(--border);margin-bottom:8px;overflow:hidden;cursor:pointer;transition:border-color .15s;}
@@ -121,7 +142,7 @@ html,body{height:100%;background:#e8eaed;display:flex;align-items:center;justify
 .benefit-lbl{font-size:10px;color:var(--text-3);margin-top:2px;}
 
 /* CHECK ITEMS */
-.check-item{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;background:var(--white);border-radius:12px;border:1px solid var(--border);margin-bottom:7px;cursor:pointer;transition:border-color .15s;}
+.check-item{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;background:var(--white);border-radius:12px;border:1px solid var(--border);margin-bottom:8px;cursor:pointer;transition:border-color .15s;}
 .check-item:hover{border-color:var(--saffron);}
 .check-box{width:22px;height:22px;border-radius:6px;border:1.5px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-top:1px;font-size:11px;font-weight:700;}
 .cb-done{background:var(--green);border-color:var(--green);color:#fff;}
@@ -137,7 +158,7 @@ html,body{height:100%;background:#e8eaed;display:flex;align-items:center;justify
 
 /* BUTTONS */
 .btn-primary{display:block;width:100%;padding:13px;background:var(--saffron);color:#fff;border:none;border-radius:14px;font-size:14px;font-weight:600;cursor:pointer;text-align:center;margin-bottom:8px;font-family:'Noto Sans',sans-serif;transition:background .15s;}
-.btn-primary:hover{background:#D4570A;}
+.btn-primary:hover{background:#854F0B;}
 .btn-ghost{display:block;width:100%;padding:12px;background:#fff;border:1px solid var(--saffron);color:var(--saffron);border-radius:14px;font-size:14px;font-weight:600;cursor:pointer;text-align:center;margin-bottom:8px;font-family:'Noto Sans',sans-serif;}
 
 /* SUPPORT */
@@ -156,6 +177,17 @@ html,body{height:100%;background:#e8eaed;display:flex;align-items:center;justify
 .alert-text strong{color:var(--amber);}
 .alert-danger .alert-text strong{color:var(--red);}
 
+/* FORM */
+.form-section{margin-bottom:16px;}
+.form-group{margin-bottom:12px;}
+.form-label{font-size:11px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;display:block;}
+.form-value-locked{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:11px 13px;font-size:13px;color:var(--text);display:flex;align-items:center;justify-content:space-between;}
+.form-value-locked .lock-icon{color:var(--text-3);font-size:14px;}
+.form-input,.form-select{width:100%;border:1px solid var(--border);border-radius:10px;padding:11px 13px;font-size:13px;color:var(--text);background:var(--white);font-family:'Noto Sans',sans-serif;outline:none;}
+.form-input:focus,.form-select:focus{border-color:var(--saffron);}
+.form-hint{font-size:11px;color:var(--text-3);margin-top:4px;}
+.success-icon{width:64px;height:64px;border-radius:50%;background:var(--green-light);color:var(--green);display:flex;align-items:center;justify-content:center;font-size:32px;margin:24px auto 16px;}
+
 /* BOTTOM NAV */
 .bottom-nav{background:var(--white);display:flex;border-top:1px solid var(--border);padding:8px 0 14px;position:absolute;bottom:0;left:0;right:0;}
 .nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:4px 0;}
@@ -170,7 +202,7 @@ html,body{height:100%;background:#e8eaed;display:flex;align-items:center;justify
 .chat-messages::-webkit-scrollbar{display:none;}
 .msg{max-width:85%;border-radius:16px;font-size:13px;line-height:1.55;align-self:flex-start;}
 .msg.user{background:var(--navy);color:#fff;border-bottom-right-radius:4px;align-self:flex-end;padding:10px 13px;}
-.msg.bot{background:var(--white);border:1px solid var(--border);color:var(--text);border-bottom-left-radius:4px;padding:10px 13px;}
+.msg.bot{background:var(--white);border:1px solid var(--border);color:var(--text);border-bottom-left-radius:4px;padding:10px 13px;white-space:pre-wrap;}
 .msg.typing{color:var(--text-3);font-style:italic;padding:10px 13px;}
 
 /* LOCATION CARD inside chat */
@@ -187,6 +219,11 @@ html,body{height:100%;background:#e8eaed;display:flex;align-items:center;justify
 
 .sq-wrap{background:var(--white);padding:8px 12px;border-top:1px solid var(--border);display:flex;gap:6px;flex-wrap:wrap;flex-shrink:0;}
 .sq-btn{font-size:11px;padding:5px 10px;border-radius:20px;border:1px solid var(--saffron);color:var(--saffron);background:#fff;cursor:pointer;white-space:nowrap;font-family:'Noto Sans',sans-serif;}
+.chat-action-btn{align-self:flex-start;background:var(--saffron);color:#fff;border:none;padding:10px 14px;border-radius:12px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Noto Sans',sans-serif;display:flex;align-items:center;gap:6px;max-width:90%;}
+.chat-action-btn:hover{background:#854F0B;}
+.chat-loc-toggle{align-self:flex-start;background:var(--white);color:var(--navy);border:1px solid var(--border);padding:9px 13px;border-radius:12px;font-size:12px;font-weight:500;cursor:pointer;font-family:'Noto Sans',sans-serif;display:flex;align-items:center;gap:6px;max-width:90%;text-align:left;}
+.chat-loc-toggle:hover{border-color:var(--saffron);}
+.chat-loc-toggle i{color:var(--saffron);flex-shrink:0;}
 .chat-input-wrap{background:var(--white);padding:10px 12px;border-top:1px solid var(--border);display:flex;gap:8px;align-items:flex-end;flex-shrink:0;}
 .chat-input{flex:1;border:1px solid var(--border);border-radius:20px;padding:9px 14px;font-size:13px;outline:none;resize:none;max-height:80px;font-family:'Noto Sans',sans-serif;background:var(--bg);color:var(--text);}
 .chat-send{width:36px;height:36px;border-radius:50%;background:var(--saffron);border:none;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
@@ -199,239 +236,428 @@ html,body{height:100%;background:#e8eaed;display:flex;align-items:center;justify
 <!-- HOME -->
 <div class="screen active" id="s-home">
   <div class="topbar">
-    <div class="topbar-left"><div class="logo-mark">USP</div><div><div class="topbar-name">Unified Scholarship Portal</div><div class="topbar-sub">Student Services</div></div></div>
-    <div class="lang-pill">हि / EN</div>
+    <div class="topbar-left"><div class="logo-mark">UCS</div><div><div class="topbar-name">Unified Citizen Services Portal</div><div class="topbar-sub">Farmer Welfare Services</div></div></div>
+    <div class="topbar-right">
+      <div class="lang-pill">తె / EN</div>
+      <button class="profile-btn" onclick="goProfile()"><i class="ti ti-user"></i></button>
+    </div>
   </div>
   <div style="padding:12px 14px 90px;display:flex;flex-direction:column;flex:1;overflow:hidden;">
     <div class="hero">
       <div class="hero-greeting">Welcome back</div>
-      <div class="hero-name">Priya Meena</div>
-      <div class="hero-sub">Class 12 · Tonk, Rajasthan</div>
+      <div class="hero-name">Venkata Rao</div>
+      <div class="hero-sub">Farmer · Kothapeta, East Godavari, AP</div>
       <div class="hero-tag">1 active scheme</div>
     </div>
     <div class="sec-head">Quick actions</div>
     <div class="quick-grid">
-      <div class="qcard" onclick="goSupport()">
-        <div class="qcard-icon">📍</div>
-        <div class="qcard-label">Check application status</div>
-      </div>
       <div class="qcard" onclick="goDocuments()">
-        <div class="qcard-icon" style="position:relative;display:inline-block;">📄<span style="position:absolute;top:-4px;right:-6px;width:8px;height:8px;background:var(--red);border-radius:50%;display:block;"></span></div>
-        <div class="qcard-label">Fix documents</div>
+        <div class="qcard-icon" style="position:relative;display:inline-block;"><i class="ti ti-file-alert"></i><span style="position:absolute;top:-4px;right:-6px;width:8px;height:8px;background:var(--red);border-radius:50%;display:block;"></span></div>
+        <div class="qcard-label">Fix documents for Rythu Bharosa</div>
         <div style="font-size:10px;color:var(--red);margin-top:3px;font-weight:500;">2 need attention</div>
+      </div>
+      <div class="qcard" onclick="goCrop()">
+        <div class="qcard-icon"><i class="ti ti-shield-check"></i></div>
+        <div class="qcard-label">Explore crop insurance</div>
+        <div style="font-size:10px;color:var(--green);margin-top:3px;font-weight:500;">Open now</div>
       </div>
     </div>
     <div style="background:var(--white);border-radius:16px;border:1px solid var(--border);padding:14px;margin-bottom:12px;cursor:pointer;" onclick="goChat()">
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
         <div class="ai-pulse"></div>
-        <span style="font-size:13px;font-weight:600;color:var(--navy);">Ask the scholarship assistant</span>
-        <span style="color:var(--saffron);margin-left:auto;">✦</span>
+        <span style="font-size:13px;font-weight:600;color:var(--navy);">Ask the farmer assistant</span>
+        <span style="color:var(--saffron);margin-left:auto;font-size:14px;"><i class="ti ti-sparkles"></i></span>
       </div>
       <div style="display:flex;gap:6px;flex-wrap:wrap;">
-        <button onclick="event.stopPropagation();goChat();setTimeout(()=>sendSuggested('Am I eligible for PMS?'),100);" style="font-size:11px;padding:5px 10px;border-radius:20px;border:1px solid var(--saffron);color:var(--saffron);background:#fff;cursor:pointer;font-family:'Noto Sans',sans-serif;">Am I eligible?</button>
-        <button onclick="event.stopPropagation();goChat();setTimeout(()=>sendSuggested('Where do I get my income certificate renewed in Tonk?'),100);" style="font-size:11px;padding:5px 10px;border-radius:20px;border:1px solid var(--saffron);color:var(--saffron);background:#fff;cursor:pointer;font-family:'Noto Sans',sans-serif;">Income cert office?</button>
-        <button onclick="event.stopPropagation();goChat();setTimeout(()=>sendSuggested('My payment was not received. What do I do?'),100);" style="font-size:11px;padding:5px 10px;border-radius:20px;border:1px solid var(--saffron);color:var(--saffron);background:#fff;cursor:pointer;font-family:'Noto Sans',sans-serif;">Payment issue?</button>
+        <button onclick="event.stopPropagation();goChat();setTimeout(()=>sendSuggested('What schemes am I eligible for?'),100);" style="font-size:11px;padding:5px 10px;border-radius:20px;border:1px solid var(--saffron);color:var(--saffron);background:#fff;cursor:pointer;font-family:'Noto Sans',sans-serif;">What schemes can I apply for?</button>
+        <button onclick="event.stopPropagation();goChat();setTimeout(()=>sendSuggested('I want to raise a grievance'),100);" style="font-size:11px;padding:5px 10px;border-radius:20px;border:1px solid var(--saffron);color:var(--saffron);background:#fff;cursor:pointer;font-family:'Noto Sans',sans-serif;">Raise a grievance</button>
+        <button onclick="event.stopPropagation();goChat();setTimeout(()=>sendSuggested('My installment was not received. What do I do?'),100);" style="font-size:11px;padding:5px 10px;border-radius:20px;border:1px solid var(--saffron);color:var(--saffron);background:#fff;cursor:pointer;font-family:'Noto Sans',sans-serif;">Payment issue?</button>
       </div>
     </div>
     <div class="sec-head">Actively pursuing</div>
-    <div class="card" onclick="goPMS()">
-      <div class="card-top"><span class="badge badge-saffron">In progress</span><span style="font-size:16px;color:var(--text-3);">›</span></div>
-      <div class="card-title">Post-Matric Scholarship (PMS)</div>
-      <div class="card-sub">Fee reimbursement + ₹1,200/month · Documents pending</div>
+    <div class="card" onclick="goRB()">
+      <div class="card-top"><span class="badge badge-saffron">In progress</span><span style="font-size:16px;color:var(--text-3);"><i class="ti ti-chevron-right"></i></span></div>
+      <div class="card-title">YSR Rythu Bharosa</div>
+      <div class="card-sub">₹13,500/year in 3 installments · 2 items need attention</div>
     </div>
   </div>
   <div class="bottom-nav">
-    <div class="nav-item active" onclick="goHome()"><div class="nav-icon">⌂</div><div class="nav-label">Home</div></div>
-    <div class="nav-item" onclick="goSchemes()"><div class="nav-icon">🎓</div><div class="nav-label">Schemes</div></div>
-    <div class="nav-item" onclick="goDocuments()"><div class="nav-icon">📄</div><div class="nav-label">Documents</div></div>
-    <div class="nav-item" onclick="goSupport()"><div class="nav-icon">⊙</div><div class="nav-label">Support</div></div>
+    <div class="nav-item active" onclick="goHome()"><div class="nav-icon"><i class="ti ti-home"></i></div><div class="nav-label">Home</div></div>
+    <div class="nav-item" onclick="goSchemes()"><div class="nav-icon"><i class="ti ti-certificate"></i></div><div class="nav-label">Schemes</div></div>
+    <div class="nav-item" onclick="goDocuments()"><div class="nav-icon"><i class="ti ti-files"></i></div><div class="nav-label">Documents</div></div>
+    <div class="nav-item" onclick="goSupport()"><div class="nav-icon"><i class="ti ti-headset"></i></div><div class="nav-label">Support</div></div>
   </div>
 </div>
 
 <!-- SCHEMES LIST -->
 <div class="screen" id="s-schemes">
-  <div class="topbar"><div class="topbar-left"><div class="logo-mark">USP</div><div><div class="topbar-name">Unified Scholarship Portal</div><div class="topbar-sub">Student Services</div></div></div><div class="lang-pill">हि / EN</div></div>
-  <div class="ai-bar" onclick="goChat()"><div class="ai-pulse"></div><span class="ai-bar-text">Ask the scholarship assistant…</span><span style="color:var(--saffron);">✦</span></div>
+  <div class="topbar"><div class="topbar-left"><div class="logo-mark">UCS</div><div><div class="topbar-name">Unified Citizen Services Portal</div><div class="topbar-sub">Farmer Welfare Services</div></div></div><div class="topbar-right"><div class="lang-pill">తె / EN</div><button class="profile-btn" onclick="goProfile()"><i class="ti ti-user"></i></button></div></div>
+  <div class="ai-bar" onclick="goChat()"><div class="ai-pulse"></div><span class="ai-bar-text">Ask the farmer assistant…</span><span style="color:var(--saffron);font-size:14px;"><i class="ti ti-sparkles"></i></span></div>
   <div class="scroll">
     <div class="page-title">Schemes</div>
     <div class="sec-head">Actively pursuing</div>
-    <div class="card" onclick="goPMS()">
-      <div class="card-top"><span class="badge badge-saffron">In progress</span><span style="font-size:16px;color:var(--text-3);">›</span></div>
-      <div class="card-title">Post-Matric Scholarship (PMS)</div>
-      <div class="card-sub">Fee reimbursement + ₹1,200/month · Documents pending</div>
+    <div class="card" onclick="goRB()">
+      <div class="card-top"><span class="badge badge-saffron">In progress</span><span style="font-size:16px;color:var(--text-3);"><i class="ti ti-chevron-right"></i></span></div>
+      <div class="card-title">YSR Rythu Bharosa</div>
+      <div class="card-sub">₹13,500/year in 3 installments · 2 items need attention</div>
     </div>
     <div class="sec-head">Should apply right now</div>
-    <div class="card placeholder">
-      <div class="card-top"><span class="badge badge-green">Eligible · Open now</span></div>
-      <div class="card-title" style="color:var(--placeholder)">Kalibai Bhil Scooty Scheme</div>
-      <div class="card-sub">Free scooty or ₹40,000 for SC girl students · Deadline approaching</div>
+    <div class="card" onclick="goCrop()">
+      <div class="card-top"><span class="badge badge-green" id="crop-badge">Eligible · Open now</span><span style="font-size:16px;color:var(--text-3);"><i class="ti ti-chevron-right"></i></span></div>
+      <div class="card-title">YSR Free Crop Insurance (Bima)</div>
+      <div class="card-sub" id="crop-card-sub">Zero-premium crop insurance · Enrolment closes before Kharif sowing</div>
     </div>
     <div class="sec-head">Should pursue next year</div>
     <div class="card placeholder">
-      <div class="card-top"><span class="badge badge-navy">After Class 12</span></div>
-      <div class="card-title" style="color:var(--placeholder)">Anuprati Coaching Scheme</div>
-      <div class="card-sub">Free coaching for competitive exams · Apply after Class 12 results</div>
+      <div class="card-top"><span class="badge badge-navy">Next season</span></div>
+      <div class="card-title" style="color:var(--placeholder)">YSR Sunna Vaddi Panta Runalu</div>
+      <div class="card-sub">Zero-interest crop loans up to ₹1 lakh · Apply before next Kharif</div>
     </div>
     <div class="card placeholder">
-      <div class="card-top"><span class="badge badge-navy">After Class 12</span></div>
-      <div class="card-title" style="color:var(--placeholder)">Mukhya Mantri Sarvjan Scholarship</div>
-      <div class="card-sub">Higher education support · Apply on college admission</div>
+      <div class="card-top"><span class="badge badge-navy">Next season</span></div>
+      <div class="card-title" style="color:var(--placeholder)">YSR Rythu Bima</div>
+      <div class="card-sub">Life insurance cover for farmer families · Renews annually</div>
     </div>
     <div style="margin-top:16px;padding:12px 14px;background:var(--saffron-light);border-radius:12px;border:0.5px solid var(--saffron-mid);">
       <div style="font-size:12px;color:#633806;line-height:1.6;"><strong style="color:var(--saffron);">Curious about other schemes?</strong><br>Ask the AI assistant — it will tell you what you qualify for and what to do next.</div>
-      <button onclick="goChat()" style="margin-top:8px;padding:7px 14px;background:var(--saffron);color:#fff;border:none;border-radius:10px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Noto Sans',sans-serif;">Ask assistant ✦</button>
+      <button onclick="goChat()" style="margin-top:8px;padding:7px 14px;background:var(--saffron);color:#fff;border:none;border-radius:10px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Noto Sans',sans-serif;">Ask assistant <i class="ti ti-sparkles"></i></button>
     </div>
   </div>
   <div class="bottom-nav">
-    <div class="nav-item" onclick="goHome()"><div class="nav-icon">⌂</div><div class="nav-label">Home</div></div>
-    <div class="nav-item active" onclick="goSchemes()"><div class="nav-icon">🎓</div><div class="nav-label">Schemes</div></div>
-    <div class="nav-item" onclick="goDocuments()"><div class="nav-icon">📄</div><div class="nav-label">Documents</div></div>
-    <div class="nav-item" onclick="goSupport()"><div class="nav-icon">⊙</div><div class="nav-label">Support</div></div>
+    <div class="nav-item" onclick="goHome()"><div class="nav-icon"><i class="ti ti-home"></i></div><div class="nav-label">Home</div></div>
+    <div class="nav-item active" onclick="goSchemes()"><div class="nav-icon"><i class="ti ti-certificate"></i></div><div class="nav-label">Schemes</div></div>
+    <div class="nav-item" onclick="goDocuments()"><div class="nav-icon"><i class="ti ti-files"></i></div><div class="nav-label">Documents</div></div>
+    <div class="nav-item" onclick="goSupport()"><div class="nav-icon"><i class="ti ti-headset"></i></div><div class="nav-label">Support</div></div>
   </div>
 </div>
 
-<!-- PMS PAGE 1: SCHEME OVERVIEW -->
-<div class="screen" id="s-pms">
+<!-- RB PAGE 1: SCHEME OVERVIEW -->
+<div class="screen" id="s-rb">
   <div class="detail-head">
-    <div class="back-btn-row"><button class="back-btn" onclick="goBack()">← All schemes</button></div>
-    <div class="detail-badge">SC · Post-Matric · SJE Dept.</div>
-    <div class="detail-title">Post-Matric Scholarship</div>
-    <div class="detail-sub">Fee reimbursement + monthly allowance</div>
+    <div class="back-btn-row"><button class="back-btn" onclick="goBack()"><i class="ti ti-arrow-left"></i> All schemes</button></div>
+    <div class="detail-badge">Farmer Welfare · Agriculture Dept.</div>
+    <div class="detail-title">YSR Rythu Bharosa</div>
+    <div class="detail-sub">Active · ₹13,500/year in 3 installments</div>
   </div>
   <div class="scroll" style="padding-bottom:90px;">
     <div style="height:12px;"></div>
+    <div class="stage-tracker">
+      <div class="stage stage-done">
+        <div class="stage-dot"><i class="ti ti-check"></i></div>
+        <div class="stage-label">Application form</div>
+      </div>
+      <div class="stage stage-active stage-line-done">
+        <div class="stage-dot">2</div>
+        <div class="stage-label">Documentation</div>
+      </div>
+      <div class="stage stage-pending">
+        <div class="stage-dot">3</div>
+        <div class="stage-label">Submission</div>
+      </div>
+      <div class="stage stage-pending">
+        <div class="stage-dot">4</div>
+        <div class="stage-label">Installment</div>
+      </div>
+    </div>
     <div class="agent-tip">
       <div class="agent-dot"></div>
-      <div class="agent-text"><strong>Priya, good news —</strong> you qualify for this scheme. But your income certificate is expiring soon. Act before you apply.</div>
+      <div class="agent-text"><strong>2 things need fixing</strong> before your next installment (Kharif) — your land record and bank seeding. Everything else is on track.</div>
     </div>
-    <div class="prog-row"><span class="prog-label">Your application readiness</span><span class="prog-val">3 of 8 ready</span></div>
-    <div class="prog-wrap"><div class="prog-fill" style="width:37%"></div></div>
 
-    <div class="step-card" onclick="toggleStep('step1')">
+    <div class="sec-head">Needs your attention (2)</div>
+    <div class="check-item" onclick="goServiceDetail('land')">
+      <div class="check-box cb-warn"><i class="ti ti-alert-triangle" style="font-size:12px;"></i></div>
+      <div><div class="check-title">Land record (1B / Adangal)</div><div class="check-sub cs-alert">Name mismatch — update at Mandal Revenue Office</div></div>
+      <div class="check-right"><i class="ti ti-chevron-right"></i></div>
+    </div>
+    <div class="check-item" onclick="goServiceDetail('bankseed')">
+      <div class="check-box cb-warn"><i class="ti ti-alert-triangle" style="font-size:12px;"></i></div>
+      <div><div class="check-title">Bank account (Aadhaar seeding)</div><div class="check-sub cs-warn">Not seeded — visit your bank branch in Kothapeta</div></div>
+      <div class="check-right"><i class="ti ti-chevron-right"></i></div>
+    </div>
+
+    <div class="sec-head">Your benefit this year</div>
+    <div class="benefit-row">
+      <div class="benefit-chip"><div class="benefit-val">₹13,500</div><div class="benefit-lbl">Per year</div></div>
+      <div class="benefit-chip"><div class="benefit-val">3</div><div class="benefit-lbl">Installments</div></div>
+      <div class="benefit-chip"><div class="benefit-val">Direct</div><div class="benefit-lbl">To your bank</div></div>
+    </div>
+    <div class="story-text" style="margin-bottom:14px;">Paid in three installments timed with Kharif, Rabi, and Zaid seasons. <strong>Next up: Kharif</strong> — fix the 2 items above so it isn't held back.</div>
+
+    <button class="btn-ghost" onclick="goDocuments()">View full document checklist</button>
+  </div>
+  <div class="bottom-nav">
+    <div class="nav-item" onclick="goHome()"><div class="nav-icon"><i class="ti ti-home"></i></div><div class="nav-label">Home</div></div>
+    <div class="nav-item active" onclick="goSchemes()"><div class="nav-icon"><i class="ti ti-certificate"></i></div><div class="nav-label">Schemes</div></div>
+    <div class="nav-item" onclick="goDocuments()"><div class="nav-icon"><i class="ti ti-files"></i></div><div class="nav-label">Documents</div></div>
+    <div class="nav-item" onclick="goSupport()"><div class="nav-icon"><i class="ti ti-headset"></i></div><div class="nav-label">Support</div></div>
+  </div>
+</div>
+
+<!-- CROP INSURANCE SCHEME OVERVIEW -->
+<div class="screen" id="s-crop">
+  <div class="detail-head">
+    <div class="back-btn-row"><button class="back-btn" onclick="goBack()"><i class="ti ti-arrow-left"></i> All schemes</button></div>
+    <div class="detail-badge">Farmer Welfare · Agriculture Dept.</div>
+    <div class="detail-title">YSR Free Crop Insurance</div>
+    <div class="detail-sub">Zero-premium cover for your crops</div>
+  </div>
+  <div class="scroll" style="padding-bottom:90px;">
+    <div style="height:12px;"></div>
+    <div class="agent-tip" id="crop-agent-tip">
+      <div class="agent-dot"></div>
+      <div class="agent-text"><strong>Venkata, this is open now —</strong> you're eligible based on your land records. Enrolment closes before Kharif sowing, so it's worth checking soon.</div>
+    </div>
+
+    <div class="step-card" onclick="toggleStep('cstep1')">
       <div class="step-head">
         <div class="step-num n-orange">1</div>
-        <div><div class="step-label">Is this for me?</div><div class="step-sub">You qualify — here's why</div></div>
-        <div class="step-arrow" id="arr1">›</div>
+        <div><div class="step-label">Is this for me?</div><div class="step-sub">Most land-owning farmers qualify</div></div>
+        <div class="step-arrow" id="arrcstep1"><i class="ti ti-chevron-right"></i></div>
       </div>
-      <div class="step-body" id="step1" style="display:none;">
-        <div class="story-text">SC category · income under ₹2.5 lakh · Class 11 or above · Rajasthan domicile. <strong>All four conditions match for you.</strong></div>
-        <div class="tags"><span class="tag tag-green">SC ✓</span><span class="tag tag-green">Income ✓</span><span class="tag tag-green">Class 12 ✓</span><span class="tag tag-green">Rajasthan ✓</span></div>
+      <div class="step-body" id="cstep1" style="display:none;">
+        <div class="story-text">Any farmer — owner or tenant — who has sown or plans to sow a notified crop this season in East Godavari. Your land record and e-Crop registration are used to confirm coverage. <strong>Based on your land records, you likely qualify.</strong></div>
+        <div class="tags"><span class="tag tag-green">Land owner <i class="ti ti-check"></i></span><span class="tag tag-green">East Godavari <i class="ti ti-check"></i></span><span class="tag tag-orange">e-Crop registration needed</span></div>
       </div>
     </div>
 
-    <div class="step-card" onclick="toggleStep('step2')">
+    <div class="step-card" onclick="toggleStep('cstep2')">
       <div class="step-head">
         <div class="step-num n-blue">2</div>
-        <div><div class="step-label">What will I get?</div><div class="step-sub">Your actual benefit</div></div>
-        <div class="step-arrow" id="arr2">›</div>
+        <div><div class="step-label">What will I get?</div><div class="step-sub">Cover if your crop fails</div></div>
+        <div class="step-arrow" id="arrcstep2"><i class="ti ti-chevron-right"></i></div>
       </div>
-      <div class="step-body" id="step2" style="display:none;">
+      <div class="step-body" id="cstep2" style="display:none;">
         <div class="benefit-row">
-          <div class="benefit-chip"><div class="benefit-val">Full fees</div><div class="benefit-lbl">Reimbursed</div></div>
-          <div class="benefit-chip"><div class="benefit-val">₹1,200</div><div class="benefit-lbl">Per month</div></div>
+          <div class="benefit-chip"><div class="benefit-val">₹0</div><div class="benefit-lbl">Premium</div></div>
+          <div class="benefit-chip"><div class="benefit-val">Per acre</div><div class="benefit-lbl">Payout basis</div></div>
           <div class="benefit-chip"><div class="benefit-val">Direct</div><div class="benefit-lbl">To your bank</div></div>
         </div>
-        <div class="story-text">Your <strong>entire tuition fee</strong> is paid back. If you stay in a hostel you also get <strong>₹1,200 every month</strong> deposited straight to your account.</div>
+        <div class="story-text">If your crop is damaged by drought, flood, or pest attack, you receive a <strong>payout based on yield loss</strong> for your registered crop and acreage — at <strong>no cost to you.</strong> Assessment uses weather and yield data for your mandal.</div>
       </div>
     </div>
 
-    <div class="step-card" onclick="goDocuments()">
+    <div class="step-card" onclick="goCropDocs()">
       <div class="step-head">
-        <div class="step-num n-red">3</div>
-        <div><div class="step-label">What do I need?</div><div class="step-sub">2 documents need attention</div></div>
-        <div class="step-arrow">›</div>
+        <div class="step-num n-green">3</div>
+        <div><div class="step-label">How do I apply?</div><div class="step-sub" id="crop-step3-sub">3 of 4 ready — 1 step left</div></div>
+        <div class="step-arrow"><i class="ti ti-chevron-right"></i></div>
       </div>
     </div>
 
-    <div class="step-card" onclick="toggleStep('step4')">
-      <div class="step-head">
-        <div class="step-num n-green">4</div>
-        <div><div class="step-label">How do I apply?</div><div class="step-sub">3 steps, takes 20 minutes</div></div>
-        <div class="step-arrow" id="arr4">›</div>
-      </div>
-      <div class="step-body" id="step4" style="display:none;">
-        <div class="story-text"><strong>Step 1:</strong> Login with your SSO ID at sje.rajasthan.gov.in<br><br><strong>Step 2:</strong> Fill the form — it filters to your situation, saves progress as you go.<br><br><strong>Step 3:</strong> Upload documents and submit before the deadline.</div>
-        <div class="tags"><span class="tag tag-navy">Deadline: May 31, 2026</span></div>
-      </div>
-    </div>
-
-    <button class="btn-ghost" onclick="goDocuments()">Check my documents</button>
+    <button class="btn-primary" onclick="goChat();setTimeout(()=>sendSuggested('Tell me more about YSR Free Crop Insurance and how to enrol'),100);">Ask about crop insurance <i class="ti ti-sparkles"></i></button>
   </div>
   <div class="bottom-nav">
-    <div class="nav-item" onclick="goHome()"><div class="nav-icon">⌂</div><div class="nav-label">Home</div></div>
-    <div class="nav-item active" onclick="goSchemes()"><div class="nav-icon">🎓</div><div class="nav-label">Schemes</div></div>
-    <div class="nav-item" onclick="goDocuments()"><div class="nav-icon">📄</div><div class="nav-label">Documents</div></div>
-    <div class="nav-item" onclick="goSupport()"><div class="nav-icon">⊙</div><div class="nav-label">Support</div></div>
+    <div class="nav-item" onclick="goHome()"><div class="nav-icon"><i class="ti ti-home"></i></div><div class="nav-label">Home</div></div>
+    <div class="nav-item active" onclick="goSchemes()"><div class="nav-icon"><i class="ti ti-certificate"></i></div><div class="nav-label">Schemes</div></div>
+    <div class="nav-item" onclick="goDocuments()"><div class="nav-icon"><i class="ti ti-files"></i></div><div class="nav-label">Documents</div></div>
+    <div class="nav-item" onclick="goSupport()"><div class="nav-icon"><i class="ti ti-headset"></i></div><div class="nav-label">Support</div></div>
   </div>
 </div>
 
-<!-- PMS PAGE 2: DOCUMENTS CHECKLIST -->
-<div class="screen" id="s-documents">
+<!-- CROP INSURANCE READINESS CHECKLIST -->
+<div class="screen" id="s-cropdocs">
   <div class="detail-head">
-    <div class="back-btn-row"><button class="back-btn" onclick="goBack()">← Post-Matric Scholarship</button></div>
-    <div class="detail-badge">Documents needed</div>
-    <div class="detail-title">What do I need?</div>
-    <div class="detail-sub">Check what's ready before you apply</div>
+    <div class="back-btn-row"><button class="back-btn" onclick="goBack()"><i class="ti ti-arrow-left"></i> Crop Insurance</button></div>
+    <div class="detail-badge">Enrolment readiness</div>
+    <div class="detail-title">How do I apply?</div>
+    <div class="detail-sub">Check what's ready before Kharif sowing</div>
   </div>
   <div class="scroll" style="padding-bottom:90px;">
     <div style="height:12px;"></div>
     <div class="agent-tip">
       <div class="agent-dot"></div>
-      <div class="agent-text"><strong>2 things need your attention.</strong> Fix these first — your application will stall without them.</div>
+      <div class="agent-text"><strong>Good news, Venkata —</strong> most of your details are already on file from Rythu Bharosa. You just need to complete e-Crop registration for this season.</div>
     </div>
-    <div class="prog-row"><span class="prog-label">Your readiness</span><span class="prog-val">3 of 8 ready</span></div>
-    <div class="prog-wrap"><div class="prog-fill" style="width:37%"></div></div>
+    <div class="prog-row"><span class="prog-label">Your readiness</span><span class="prog-val" id="cropdocs-prog-val">3 of 4 ready</span></div>
+    <div class="prog-wrap"><div class="prog-fill" id="cropdocs-prog-fill" style="width:75%"></div></div>
 
-    <div class="check-item" onclick="goServiceDetail('income')">
-      <div class="check-box cb-warn">!</div>
-      <div><div class="check-title">Income certificate</div><div class="check-sub cs-alert">Expires in 3 months — renew at Tonk Tehsil office</div></div>
-      <div class="check-right">›</div>
-    </div>
-    <div class="check-item" onclick="goServiceDetail('caste')">
-      <div class="check-box cb-warn">!</div>
-      <div><div class="check-title">Caste certificate (SC)</div><div class="check-sub cs-warn">Not verified in backend — visit SDO office, Tonk</div></div>
-      <div class="check-right">›</div>
+    <div class="check-item" onclick="goCropForm()">
+      <div class="check-box cb-warn" id="cropdocs-ecrop-box"><i class="ti ti-alert-triangle" style="font-size:12px;"></i></div>
+      <div><div class="check-title">Crop details (e-Crop registration)</div><div class="check-sub cs-alert" id="cropdocs-ecrop-sub">Not done — fill the Crop Insurance form below</div></div>
+      <div class="check-right"><i class="ti ti-chevron-right"></i></div>
     </div>
     <div class="check-item">
-      <div class="check-box cb-done">✓</div>
-      <div><div class="check-title">Jan Aadhaar card</div><div class="check-sub cs-ok">Linked and verified</div></div>
+      <div class="check-box cb-done"><i class="ti ti-check"></i></div>
+      <div><div class="check-title">Aadhaar card</div><div class="check-sub cs-ok">Already verified — reused from your profile</div></div>
     </div>
     <div class="check-item">
-      <div class="check-box cb-done">✓</div>
-      <div><div class="check-title">Aadhaar card</div><div class="check-sub cs-ok">Verified</div></div>
+      <div class="check-box cb-done"><i class="ti ti-check"></i></div>
+      <div><div class="check-title">Land record (1B / Adangal)</div><div class="check-sub cs-ok">On file — confirms your cultivable land</div></div>
     </div>
     <div class="check-item">
-      <div class="check-box cb-done">✓</div>
-      <div><div class="check-title">Bank account (Aadhaar seeded)</div><div class="check-sub cs-ok">Ready for ABPS payment</div></div>
+      <div class="check-box cb-done"><i class="ti ti-check"></i></div>
+      <div><div class="check-title">AP domicile / ration card</div><div class="check-sub cs-ok">Already verified — reused from your profile</div></div>
     </div>
-    <div class="check-item">
-      <div class="check-box"></div>
-      <div><div class="check-title">Domicile certificate</div><div class="check-sub cs-muted">Upload when applying</div></div>
-    </div>
-    <div class="check-item">
-      <div class="check-box"></div>
-      <div><div class="check-title">Marksheet (Class 11)</div><div class="check-sub cs-muted">Upload when applying</div></div>
-    </div>
-    <div class="check-item">
-      <div class="check-box"></div>
-      <div><div class="check-title">Fee receipt from school</div><div class="check-sub cs-muted">Upload when applying</div></div>
-    </div>
-    <button class="btn-primary" style="margin-top:12px;" onclick="goServiceDetail('income')">Fix urgent documents first</button>
+    <button class="btn-primary" id="cropdocs-cta" style="margin-top:12px;" onclick="goCropForm()">Fill Crop Insurance form</button>
   </div>
   <div class="bottom-nav">
-    <div class="nav-item" onclick="goHome()"><div class="nav-icon">⌂</div><div class="nav-label">Home</div></div>
-    <div class="nav-item" onclick="goSchemes()"><div class="nav-icon">🎓</div><div class="nav-label">Schemes</div></div>
-    <div class="nav-item active" onclick="goDocuments()"><div class="nav-icon">📄</div><div class="nav-label">Documents</div></div>
-    <div class="nav-item" onclick="goSupport()"><div class="nav-icon">⊙</div><div class="nav-label">Support</div></div>
+    <div class="nav-item" onclick="goHome()"><div class="nav-icon"><i class="ti ti-home"></i></div><div class="nav-label">Home</div></div>
+    <div class="nav-item active" onclick="goSchemes()"><div class="nav-icon"><i class="ti ti-certificate"></i></div><div class="nav-label">Schemes</div></div>
+    <div class="nav-item" onclick="goDocuments()"><div class="nav-icon"><i class="ti ti-files"></i></div><div class="nav-label">Documents</div></div>
+    <div class="nav-item" onclick="goSupport()"><div class="nav-icon"><i class="ti ti-headset"></i></div><div class="nav-label">Support</div></div>
+  </div>
+</div>
+
+<!-- CROP INSURANCE / e-CROP APPLICATION FORM -->
+<div class="screen" id="s-cropform">
+  <div class="detail-head">
+    <div class="back-btn-row"><button class="back-btn" onclick="goBack()"><i class="ti ti-arrow-left"></i> Crop Insurance</button></div>
+    <div class="detail-badge">e-Crop Registration · YSR Free Crop Insurance</div>
+    <div class="detail-title">Crop Insurance Application</div>
+    <div class="detail-sub">Same form as ysrrythubharosa.ap.gov.in — submitted directly to e-Panta</div>
+  </div>
+  <div class="scroll" style="padding-bottom:90px;">
+    <div style="height:12px;"></div>
+    <div class="agent-tip">
+      <div class="agent-dot"></div>
+      <div class="agent-text"><strong>Most fields are pre-filled</strong> from your Rythu Bharosa records. Just confirm this season's crop details below.</div>
+    </div>
+
+    <div class="form-section">
+      <div class="sec-head" style="margin-top:0;">Farmer details — from your profile</div>
+      <div class="form-group">
+        <span class="form-label">Farmer name</span>
+        <div class="form-value-locked">Venkata Rao <i class="ti ti-lock lock-icon"></i></div>
+      </div>
+      <div class="form-group">
+        <span class="form-label">Aadhaar number</span>
+        <div class="form-value-locked">XXXX XXXX 4821 <i class="ti ti-lock lock-icon"></i></div>
+      </div>
+      <div class="form-group">
+        <span class="form-label">Survey number / Village</span>
+        <div class="form-value-locked">114/2 · Kothapeta <i class="ti ti-lock lock-icon"></i></div>
+      </div>
+      <div class="form-group">
+        <span class="form-label">Bank account (for payout)</span>
+        <div class="form-value-locked">AP Grameena Vikas Bank · ...6210 <i class="ti ti-lock lock-icon"></i></div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="sec-head" style="margin-top:0;">This season's crop details — please confirm</div>
+      <div class="form-group">
+        <span class="form-label">Season</span>
+        <select class="form-select" id="cf-season">
+          <option>Kharif 2026</option>
+          <option>Rabi 2026–27</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <span class="form-label">Crop sown</span>
+        <select class="form-select" id="cf-crop">
+          <option>Paddy</option>
+          <option>Maize</option>
+          <option>Cotton</option>
+          <option>Chillies</option>
+          <option>Black gram</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <span class="form-label">Area under cultivation (acres)</span>
+        <input class="form-input" id="cf-area" type="number" value="2" step="0.1" min="0.1">
+        <div class="form-hint">From your land record — edit if different this season</div>
+      </div>
+    </div>
+
+    <button class="btn-primary" onclick="submitCropForm()">Submit application</button>
+    <div class="form-hint" style="text-align:center;margin-top:4px;">This submits to the e-Panta system, same as the official website</div>
+  </div>
+  <div class="bottom-nav">
+    <div class="nav-item" onclick="goHome()"><div class="nav-icon"><i class="ti ti-home"></i></div><div class="nav-label">Home</div></div>
+    <div class="nav-item active" onclick="goSchemes()"><div class="nav-icon"><i class="ti ti-certificate"></i></div><div class="nav-label">Schemes</div></div>
+    <div class="nav-item" onclick="goDocuments()"><div class="nav-icon"><i class="ti ti-files"></i></div><div class="nav-label">Documents</div></div>
+    <div class="nav-item" onclick="goSupport()"><div class="nav-icon"><i class="ti ti-headset"></i></div><div class="nav-label">Support</div></div>
+  </div>
+</div>
+
+<!-- CROP INSURANCE SUBMISSION SUCCESS -->
+<div class="screen" id="s-cropsuccess">
+  <div class="detail-head">
+    <div class="back-btn-row"><button class="back-btn" onclick="goSchemes()"><i class="ti ti-arrow-left"></i> Schemes</button></div>
+    <div class="detail-badge">e-Crop Registration · YSR Free Crop Insurance</div>
+    <div class="detail-title">Application Submitted</div>
+    <div class="detail-sub">Confirmation from e-Panta</div>
+  </div>
+  <div class="scroll" style="padding-bottom:90px;">
+    <div class="success-icon"><i class="ti ti-check"></i></div>
+    <div style="text-align:center;font-size:15px;font-weight:600;color:var(--navy);margin-bottom:4px;">Crop Insurance application submitted</div>
+    <div style="text-align:center;font-size:12px;color:var(--text-3);margin-bottom:20px;">Reference ID: <span id="cf-ref">EP-2026-KH-114782</span></div>
+
+    <div class="agent-tip">
+      <div class="agent-dot"></div>
+      <div class="agent-text"><strong>What happens next —</strong> your e-Crop registration links your land to YSR Free Crop Insurance for this season automatically. No separate approval needed. Coverage applies from today.</div>
+    </div>
+
+    <div class="sec-head" style="margin-top:16px;">Submission summary</div>
+    <div class="check-item"><div class="check-box cb-done"><i class="ti ti-check"></i></div><div><div class="check-title">Season</div><div class="check-sub cs-ok" id="cf-summary-season">Kharif 2026</div></div></div>
+    <div class="check-item"><div class="check-box cb-done"><i class="ti ti-check"></i></div><div><div class="check-title">Crop sown</div><div class="check-sub cs-ok" id="cf-summary-crop">Paddy</div></div></div>
+    <div class="check-item"><div class="check-box cb-done"><i class="ti ti-check"></i></div><div><div class="check-title">Area under cultivation</div><div class="check-sub cs-ok" id="cf-summary-area">2 acres</div></div></div>
+
+    <button class="btn-primary" style="margin-top:16px;" onclick="goSchemes()">Back to Schemes</button>
+    <button class="btn-ghost" onclick="goHome()">Back to Home</button>
+  </div>
+  <div class="bottom-nav">
+    <div class="nav-item" onclick="goHome()"><div class="nav-icon"><i class="ti ti-home"></i></div><div class="nav-label">Home</div></div>
+    <div class="nav-item active" onclick="goSchemes()"><div class="nav-icon"><i class="ti ti-certificate"></i></div><div class="nav-label">Schemes</div></div>
+    <div class="nav-item" onclick="goDocuments()"><div class="nav-icon"><i class="ti ti-files"></i></div><div class="nav-label">Documents</div></div>
+    <div class="nav-item" onclick="goSupport()"><div class="nav-icon"><i class="ti ti-headset"></i></div><div class="nav-label">Support</div></div>
+  </div>
+</div>
+
+<div class="screen" id="s-documents">
+  <div class="detail-head">
+    <div class="back-btn-row"><button class="back-btn" onclick="goBack()"><i class="ti ti-arrow-left"></i> YSR Rythu Bharosa</button></div>
+    <div class="detail-badge">Documents needed</div>
+    <div class="detail-title">What do I need?</div>
+    <div class="detail-sub">Check what's ready before the next installment</div>
+  </div>
+  <div class="scroll" style="padding-bottom:90px;">
+    <div style="height:12px;"></div>
+    <div class="agent-tip">
+      <div class="agent-dot"></div>
+      <div class="agent-text"><strong>2 urgent items</strong> are holding back your next installment. Everything else is either already done or not needed yet.</div>
+    </div>
+
+    <div class="sec-head">Fix these first (2)</div>
+    <div class="check-item" onclick="goServiceDetail('land')">
+      <div class="check-box cb-warn"><i class="ti ti-alert-triangle" style="font-size:12px;"></i></div>
+      <div><div class="check-title">Land record (1B / Adangal)</div><div class="check-sub cs-alert">Name mismatch — update at Mandal Revenue Office</div></div>
+      <div class="check-right"><i class="ti ti-chevron-right"></i></div>
+    </div>
+    <div class="check-item" onclick="goServiceDetail('bankseed')">
+      <div class="check-box cb-warn"><i class="ti ti-alert-triangle" style="font-size:12px;"></i></div>
+      <div><div class="check-title">Bank account (Aadhaar seeding)</div><div class="check-sub cs-warn">Not seeded — visit your bank branch in Kothapeta</div></div>
+      <div class="check-right"><i class="ti ti-chevron-right"></i></div>
+    </div>
+
+    <div class="sec-head">Already verified</div>
+    <div style="background:var(--white);border:0.5px solid var(--border);border-radius:12px;padding:11px 13px;margin-bottom:7px;display:flex;align-items:flex-start;gap:9px;">
+      <i class="ti ti-check" style="color:var(--green);font-size:15px;margin-top:1px;flex-shrink:0;"></i>
+      <div style="font-size:12px;color:var(--text-2);line-height:1.7;">Aadhaar card · AP domicile / ration card · PM-KISAN enrolment — <span style="color:var(--green);">all linked and verified</span></div>
+    </div>
+
+    <div class="sec-head">For later seasons</div>
+    <div style="background:var(--white);border:0.5px solid var(--border);border-radius:12px;padding:11px 13px;margin-bottom:7px;">
+      <div style="font-size:12px;color:var(--text-2);line-height:1.7;margin-bottom:3px;"><span style="color:var(--text);font-weight:500;">Crop details (e-Crop)</span> — recorded by VAA each season</div>
+      <div style="font-size:12px;color:var(--text-2);line-height:1.7;"><span style="color:var(--text);font-weight:500;">Passbook copy</span> — upload at Rythu Bharosa Kendra</div>
+    </div>
+    <button class="btn-primary" style="margin-top:12px;" onclick="goServiceDetail('land')">Fix urgent items first</button>
+  </div>
+  <div class="bottom-nav">
+    <div class="nav-item" onclick="goHome()"><div class="nav-icon"><i class="ti ti-home"></i></div><div class="nav-label">Home</div></div>
+    <div class="nav-item" onclick="goSchemes()"><div class="nav-icon"><i class="ti ti-certificate"></i></div><div class="nav-label">Schemes</div></div>
+    <div class="nav-item active" onclick="goDocuments()"><div class="nav-icon"><i class="ti ti-files"></i></div><div class="nav-label">Documents</div></div>
+    <div class="nav-item" onclick="goSupport()"><div class="nav-icon"><i class="ti ti-headset"></i></div><div class="nav-label">Support</div></div>
   </div>
 </div>
 
 <!-- SERVICE DETAIL -->
 <div class="screen" id="s-svc">
   <div class="detail-head">
-    <div class="back-btn-row"><button class="back-btn" onclick="goBack()">← Documents</button></div>
+    <div class="back-btn-row"><button class="back-btn" onclick="goBack()"><i class="ti ti-arrow-left"></i> <span id="svc-back-label">Documents</span></button></div>
     <div class="detail-badge" id="svc-badge">Certificate</div>
-    <div class="detail-title" id="svc-title">Income Certificate</div>
+    <div class="detail-title" id="svc-title">Land Record</div>
     <div class="detail-sub" id="svc-time">7 working days</div>
   </div>
   <div class="scroll" style="padding-bottom:90px;">
@@ -441,39 +667,39 @@ html,body{height:100%;background:#e8eaed;display:flex;align-items:center;justify
     <p id="svc-about" style="font-size:13px;color:var(--text-2);line-height:1.65;margin-bottom:14px;"></p>
     <div class="sec-head">What to carry</div>
     <ul id="svc-docs" style="list-style:none;padding:0;margin-bottom:14px;"></ul>
-    <div class="sec-head">Where to go in Tonk</div>
+    <div class="sec-head">Where to go in Kothapeta</div>
     <div id="svc-office-card"></div>
-    <button class="btn-ghost" onclick="goChat()">Ask AI assistant ✦</button>
+    <button class="btn-ghost" onclick="goChat()">Ask AI assistant <i class="ti ti-sparkles"></i></button>
   </div>
   <div class="bottom-nav">
-    <div class="nav-item" onclick="goHome()"><div class="nav-icon">⌂</div><div class="nav-label">Home</div></div>
-    <div class="nav-item" onclick="goSchemes()"><div class="nav-icon">🎓</div><div class="nav-label">Schemes</div></div>
-    <div class="nav-item active" onclick="goDocuments()"><div class="nav-icon">📄</div><div class="nav-label">Documents</div></div>
-    <div class="nav-item" onclick="goSupport()"><div class="nav-icon">⊙</div><div class="nav-label">Support</div></div>
+    <div class="nav-item" onclick="goHome()"><div class="nav-icon"><i class="ti ti-home"></i></div><div class="nav-label">Home</div></div>
+    <div class="nav-item" onclick="goSchemes()"><div class="nav-icon"><i class="ti ti-certificate"></i></div><div class="nav-label">Schemes</div></div>
+    <div class="nav-item active" onclick="goDocuments()"><div class="nav-icon"><i class="ti ti-files"></i></div><div class="nav-label">Documents</div></div>
+    <div class="nav-item" onclick="goSupport()"><div class="nav-icon"><i class="ti ti-headset"></i></div><div class="nav-label">Support</div></div>
   </div>
 </div>
 
 <!-- SUPPORT -->
 <div class="screen" id="s-support">
-  <div class="topbar"><div class="topbar-left"><div class="logo-mark">USP</div><div><div class="topbar-name">Unified Scholarship Portal</div><div class="topbar-sub">Student Services</div></div></div><div class="lang-pill">हि / EN</div></div>
-  <div class="ai-bar" onclick="goChat()"><div class="ai-pulse"></div><span class="ai-bar-text">Ask the scholarship assistant…</span><span style="color:var(--saffron);">✦</span></div>
+  <div class="topbar"><div class="topbar-left"><div class="logo-mark">UCS</div><div><div class="topbar-name">Unified Citizen Services Portal</div><div class="topbar-sub">Farmer Welfare Services</div></div></div><div class="topbar-right"><div class="lang-pill">తె / EN</div><button class="profile-btn" onclick="goProfile()"><i class="ti ti-user"></i></button></div></div>
+  <div class="ai-bar" onclick="goChat()"><div class="ai-pulse"></div><span class="ai-bar-text">Ask the farmer assistant…</span><span style="color:var(--saffron);font-size:14px;"><i class="ti ti-sparkles"></i></span></div>
   <div class="scroll">
     <div class="page-title">Support</div>
 
     <div class="sec-head">Get help</div>
-    <div class="card" onclick="goChat()">
-      <div class="card-top"><span class="badge badge-saffron">AI guided</span><span style="font-size:16px;color:var(--text-3);">›</span></div>
+    <div class="card" onclick="goChat();setTimeout(()=>sendSuggested('I want to raise a grievance'),100);">
+      <div class="card-top"><span class="badge badge-saffron">AI guided</span><span style="font-size:16px;color:var(--text-3);"><i class="ti ti-chevron-right"></i></span></div>
       <div class="card-title">Raise a grievance</div>
       <div class="card-sub">Agent maps the right escalation path for you</div>
     </div>
     <div class="card" onclick="goChat()">
-      <div class="card-top"><span class="badge badge-navy">ABPS issue</span><span style="font-size:16px;color:var(--text-3);">›</span></div>
-      <div class="card-title">Payment not received?</div>
-      <div class="card-sub">Diagnose Aadhaar–bank seeding failure</div>
+      <div class="card-top"><span class="badge badge-navy">Payment issue</span><span style="font-size:16px;color:var(--text-3);"><i class="ti ti-chevron-right"></i></span></div>
+      <div class="card-title">Installment not received?</div>
+      <div class="card-sub">Diagnose Aadhaar–bank seeding or land record issue</div>
     </div>
     <div class="card" onclick="goChat()">
-      <div class="card-top"><span class="badge badge-navy">Office visit</span><span style="font-size:16px;color:var(--text-3);">›</span></div>
-      <div class="card-title">Find the right office in Tonk</div>
+      <div class="card-top"><span class="badge badge-navy">Office visit</span><span style="font-size:16px;color:var(--text-3);"><i class="ti ti-chevron-right"></i></span></div>
+      <div class="card-title">Find the right office in Kothapeta</div>
       <div class="card-sub">Agent shares location, officer name and timings</div>
     </div>
 
@@ -481,47 +707,106 @@ html,body{height:100%;background:#e8eaed;display:flex;align-items:center;justify
     <div class="track-item">
       <div class="status-dot sd-pending"></div>
       <div>
-        <div class="track-title">Caste certificate objection</div>
-        <div class="track-sub">Raised 12 May 2026 · Awaiting response from SDO office</div>
+        <div class="track-title">Land record name mismatch</div>
+        <div class="track-sub">Raised 12 May 2026 · Awaiting response from MRO office</div>
       </div>
     </div>
     <div class="track-item">
       <div class="status-dot sd-ok"></div>
       <div>
-        <div class="track-title">Income certificate mismatch</div>
-        <div class="track-sub">Raised 3 Apr 2026 · Resolved by Tehsildar, Tonk</div>
+        <div class="track-title">Previous installment delay</div>
+        <div class="track-sub">Raised 3 Apr 2026 · Resolved by Village Secretariat</div>
       </div>
     </div>
 
   </div>
   <div class="bottom-nav">
-    <div class="nav-item" onclick="goHome()"><div class="nav-icon">⌂</div><div class="nav-label">Home</div></div>
-    <div class="nav-item" onclick="goSchemes()"><div class="nav-icon">🎓</div><div class="nav-label">Schemes</div></div>
-    <div class="nav-item" onclick="goDocuments()"><div class="nav-icon">📄</div><div class="nav-label">Documents</div></div>
-    <div class="nav-item active" onclick="goSupport()"><div class="nav-icon">⊙</div><div class="nav-label">Support</div></div>
+    <div class="nav-item" onclick="goHome()"><div class="nav-icon"><i class="ti ti-home"></i></div><div class="nav-label">Home</div></div>
+    <div class="nav-item" onclick="goSchemes()"><div class="nav-icon"><i class="ti ti-certificate"></i></div><div class="nav-label">Schemes</div></div>
+    <div class="nav-item" onclick="goDocuments()"><div class="nav-icon"><i class="ti ti-files"></i></div><div class="nav-label">Documents</div></div>
+    <div class="nav-item active" onclick="goSupport()"><div class="nav-icon"><i class="ti ti-headset"></i></div><div class="nav-label">Support</div></div>
+  </div>
+</div>
+
+<!-- PROFILE -->
+<div class="screen" id="s-profile">
+  <div class="detail-head">
+    <div class="back-btn-row"><button class="back-btn" onclick="goBack()"><i class="ti ti-arrow-left"></i> Back</button></div>
+    <div style="display:flex;align-items:center;gap:14px;margin-top:6px;">
+      <div class="profile-avatar-lg">VR</div>
+      <div>
+        <div class="detail-title" style="margin-bottom:2px;">Venkata Rao</div>
+        <div class="detail-sub">Farmer · Kothapeta, East Godavari, AP</div>
+      </div>
+    </div>
+  </div>
+  <div class="scroll" style="padding-bottom:90px;">
+    <div style="height:12px;"></div>
+    <div class="sec-head">Account</div>
+    <div class="profile-row">
+      <div class="profile-row-icon"><i class="ti ti-id"></i></div>
+      <div style="flex:1;"><div class="profile-row-title">Aadhaar-linked profile</div><div class="profile-row-sub">XXXX XXXX 4821 · Verified</div></div>
+      <i class="ti ti-check" style="color:var(--green);font-size:16px;"></i>
+    </div>
+    <div class="profile-row">
+      <div class="profile-row-icon"><i class="ti ti-building-bank"></i></div>
+      <div style="flex:1;"><div class="profile-row-title">Linked bank account</div><div class="profile-row-sub">AP Grameena Vikas Bank · ...6210</div></div>
+      <i class="ti ti-check" style="color:var(--green);font-size:16px;"></i>
+    </div>
+    <div class="profile-row">
+      <div class="profile-row-icon"><i class="ti ti-map-pin-filled"></i></div>
+      <div style="flex:1;"><div class="profile-row-title">Village &amp; land details</div><div class="profile-row-sub">Kothapeta · 2 acres · Survey No. 114/2</div></div>
+      <i class="ti ti-chevron-right" style="color:var(--text-3);font-size:16px;"></i>
+    </div>
+
+    <div class="sec-head">Preferences</div>
+    <div class="profile-row">
+      <div class="profile-row-icon"><i class="ti ti-language"></i></div>
+      <div style="flex:1;"><div class="profile-row-title">Language</div><div class="profile-row-sub">Telugu / English</div></div>
+      <i class="ti ti-chevron-right" style="color:var(--text-3);font-size:16px;"></i>
+    </div>
+    <div class="profile-row">
+      <div class="profile-row-icon"><i class="ti ti-bell"></i></div>
+      <div style="flex:1;"><div class="profile-row-title">Notifications</div><div class="profile-row-sub">Installment alerts, document reminders</div></div>
+      <i class="ti ti-chevron-right" style="color:var(--text-3);font-size:16px;"></i>
+    </div>
+
+    <div class="sec-head">Account actions</div>
+    <div class="profile-row">
+      <div class="profile-row-icon"><i class="ti ti-logout"></i></div>
+      <div style="flex:1;"><div class="profile-row-title">Logout</div><div class="profile-row-sub">End this session</div></div>
+    </div>
+  </div>
+  <div class="bottom-nav">
+    <div class="nav-item" onclick="goHome()"><div class="nav-icon"><i class="ti ti-home"></i></div><div class="nav-label">Home</div></div>
+    <div class="nav-item" onclick="goSchemes()"><div class="nav-icon"><i class="ti ti-certificate"></i></div><div class="nav-label">Schemes</div></div>
+    <div class="nav-item" onclick="goDocuments()"><div class="nav-icon"><i class="ti ti-files"></i></div><div class="nav-label">Documents</div></div>
+    <div class="nav-item" onclick="goSupport()"><div class="nav-icon"><i class="ti ti-headset"></i></div><div class="nav-label">Support</div></div>
   </div>
 </div>
 
 <!-- AI CHAT -->
 <div class="screen" id="s-chat">
   <div class="chat-header">
-    <button onclick="goBack()" style="background:none;border:none;cursor:pointer;font-size:20px;color:var(--saffron);">←</button>
-    <div class="logo-mark">USP</div>
-    <div><div style="font-size:13px;font-weight:600;color:var(--navy);">Scholarship Assistant</div><div style="font-size:10px;color:var(--green);">● Live · AI Powered</div></div>
+    <button onclick="goBack()" style="background:none;border:none;cursor:pointer;font-size:20px;color:var(--saffron);"><i class="ti ti-arrow-left"></i></button>
+    <div class="logo-mark">UCS</div>
+    <div><div style="font-size:13px;font-weight:600;color:var(--navy);">Farmer Assistant</div><div style="font-size:10px;color:var(--green);">● Live · AI Powered</div></div>
   </div>
   <div class="chat-wrap">
     <div class="chat-messages" id="chat-messages">
-      <div class="msg bot">Namaste Priya! I can help you with your Post-Matric Scholarship — documents, eligibility, office locations, or payment issues.<br><br>What do you need?</div>
+      <div class="msg bot">Namaskaram Venkata garu! I can help with your farmer welfare schemes — Rythu Bharosa, crop insurance, documents, office locations, payments, or grievances.
+
+What do you need?</div>
     </div>
     <div class="sq-wrap" id="sq-wrap">
-      <button class="sq-btn" onclick="sendSuggested('Am I eligible for PMS?')">Am I eligible?</button>
-      <button class="sq-btn" onclick="sendSuggested('Where do I get my income certificate renewed in Tonk?')">Income cert office?</button>
-      <button class="sq-btn" onclick="sendSuggested('My payment was not received. What do I do?')">Payment not received?</button>
-      <button class="sq-btn" onclick="sendSuggested('Where is the SDO office in Tonk for caste certificate?')">Caste cert office?</button>
+      <button class="sq-btn" onclick="sendSuggested('What schemes am I eligible for?')">What schemes can I apply for?</button>
+      <button class="sq-btn" onclick="sendSuggested('Tell me about Rythu Bharosa')">About Rythu Bharosa</button>
+      <button class="sq-btn" onclick="sendSuggested('Tell me more about YSR Free Crop Insurance and how to enrol')">About crop insurance</button>
+      <button class="sq-btn" onclick="sendSuggested('I want to raise a grievance')">Raise a grievance</button>
     </div>
     <div class="chat-input-wrap">
-      <textarea class="chat-input" id="chat-input" rows="1" placeholder="Type in Hindi or English…"></textarea>
-      <button class="chat-send" id="send-btn" onclick="sendMessage()">➤</button>
+      <textarea class="chat-input" id="chat-input" rows="1" placeholder="Type in Telugu or English…"></textarea>
+      <button class="chat-send" id="send-btn" onclick="sendMessage()"><i class="ti ti-send"></i></button>
     </div>
   </div>
 </div>
@@ -529,16 +814,17 @@ html,body{height:100%;background:#e8eaed;display:flex;align-items:center;justify
 </div>
 <script>
 const OFFICES = {
-  income: { name:'Tonk Tehsil Office', address:'Collectorate Campus, Tonk, Rajasthan 304001', officer:'Tehsildar, Tonk', timing:'10am – 5pm, Mon–Sat', maps:'https://maps.google.com/?q=Tonk+Tehsil+Office+Rajasthan' },
-  caste:  { name:'SDO Office, Tonk', address:'Civil Lines, Tonk, Rajasthan 304001', officer:'Sub-Divisional Officer, Tonk', timing:'10am – 5pm, Mon–Sat', maps:'https://maps.google.com/?q=SDO+Office+Civil+Lines+Tonk+Rajasthan', alt:'e-Mitra Kiosk, Tonk Bus Stand' },
-  emitra: { name:'e-Mitra Kiosk — Tonk Bus Stand', address:'Bus Stand Area, Tonk, Rajasthan 304001', officer:'e-Mitra operator', timing:'9am – 6pm, Mon–Sat', maps:'https://maps.google.com/?q=Tonk+Bus+Stand+Rajasthan' },
-  dlo:    { name:'DLO-SJE Office, Tonk', address:'District Collectorate, Tonk, Rajasthan 304001', officer:'District Level Officer, Social Justice & Empowerment', timing:'10am – 5pm, Mon–Fri', maps:'https://maps.google.com/?q=District+Collectorate+Tonk+Rajasthan' },
-  bank:   { name:'SBI Branch, Tonk', address:'Station Road, Tonk, Rajasthan 304001', officer:'Branch Manager', timing:'10am – 4pm, Mon–Sat', maps:'https://maps.google.com/?q=SBI+Branch+Tonk+Rajasthan' }
+  land:    { name:'Mandal Revenue Office (MRO), Kothapeta', address:'Mandal Headquarters, Kothapeta, East Godavari, AP 533285', officer:'Mandal Revenue Officer', timing:'10am – 5pm, Mon–Sat', maps:'https://maps.google.com/?q=Mandal+Revenue+Office+Kothapeta+East+Godavari' },
+  vsec:    { name:'Village Secretariat, Kothapeta', address:'Village Secretariat Building, Kothapeta, East Godavari, AP 533285', officer:'Village Agriculture Assistant', timing:'9am – 5pm, Mon–Sat', maps:'https://maps.google.com/?q=Village+Secretariat+Kothapeta+East+Godavari' },
+  bankseed:{ name:'Andhra Pradesh Grameena Vikas Bank, Kothapeta', address:'Main Road, Kothapeta, East Godavari, AP 533285', officer:'Branch Manager', timing:'10am – 4pm, Mon–Sat', maps:'https://maps.google.com/?q=Andhra+Pragathi+Grameena+Bank+Kothapeta' },
+  rbk:     { name:'Rythu Bharosa Kendra (RBK), Kothapeta', address:'Near Agriculture Market Yard, Kothapeta, East Godavari, AP 533285', officer:'RBK In-charge', timing:'9am – 6pm, Mon–Sat', maps:'https://maps.google.com/?q=Rythu+Bharosa+Kendra+Kothapeta' },
+  dlo:     { name:'District Agriculture Office, East Godavari', address:'Collectorate Campus, Kakinada, East Godavari, AP 533001', officer:'Joint Director of Agriculture', timing:'10am – 5pm, Mon–Fri', maps:'https://maps.google.com/?q=District+Agriculture+Office+Kakinada' }
 };
 
 const SERVICES = {
-  income:{ badge:'⚠ Expiring soon', title:'Income Certificate', time:'7 working days · Renew urgently', about:"This certificate confirms your family's annual income. It must be valid at the time of application AND at verification. If it expires mid-process, your application stalls silently — so renew it now.", docs:['Aadhaar card','Ration card','Self-declaration of income','Recent electricity or water bill'], office:'income', alert:{type:'warn',text:'<strong>Renew now:</strong> At least 2 months before applying. Expiry mid-process is the most common silent block.'} },
-  caste:{  badge:'SC Certificate', title:'Caste Certificate (SC)', time:'10–15 working days', about:'This certificate must not only exist on paper — it must be present in the government backend database. If it is absent in the backend, your application will be silently rejected even if your physical certificate is valid.', docs:["Aadhaar card","Father's caste certificate or affidavit","School transfer certificate","Ration card"], office:'caste', alt:'emitra', alert:{type:'danger',text:'<strong>Check backend:</strong> A certificate that exists on paper but not in the backend will silently reject your application.'} }
+  land:{ badge:'Mismatch found', title:'Land Record (1B / Adangal)', time:'10–15 working days · Update urgently', about:"The 1B and Adangal extracts are the official land records that confirm you cultivate this land. Your name on these records must match your Aadhaar exactly. A mismatch can hold back your next Rythu Bharosa installment.", docs:['Aadhaar card','Existing 1B / Adangal extract','Pattadar passbook','Recent land tax receipt'], office:'land', alert:{type:'warn',text:'<strong>Update now:</strong> A name mismatch in land records is the most common reason installments are held back.'} },
+  bankseed:{ badge:'Aadhaar Seeding', title:'Bank Account (Aadhaar Seeding)', time:'1–3 working days', about:"Your bank account must be seeded with Aadhaar through NPCI for DBT (Direct Benefit Transfer). If seeding is missing or incorrect, your approved installment will not be credited even after sanction.", docs:["Aadhaar card","Bank passbook","Bank account number"], office:'bankseed', alert:{type:'danger',text:'<strong>Check seeding:</strong> Approved installments fail at payment when Aadhaar–bank seeding is missing or incorrect.'} },
+  ecrop:{ badge:'Not done', title:'Crop Details (e-Crop Registration)', time:'Done during VAA field visit, or contact via Village Secretariat', about:"e-Crop registration (e-Panta) records what you've sown, on which survey number, and how much area — for this season. It links your land to YSR Free Crop Insurance and several other schemes. Without it, you won't be covered even though you're eligible.", docs:['Aadhaar card','Land record (1B / Adangal)','Details of crop sown this season'], office:'vsec', alert:{type:'warn',text:'<strong>Do this before sowing ends:</strong> Your Village Agriculture Assistant (VAA) usually visits and records this during the village survey. If missed, contact the VAA via your Village Secretariat — registration does not carry over automatically each season.'} }
 };
 
 let prev='s-home';
@@ -551,7 +837,51 @@ function goDocuments(){prev=document.querySelector('.screen.active')?.id||'s-hom
 function goSupport(){prev='s-support';show('s-support');}
 function goChat(){prev=document.querySelector('.screen.active')?.id||'s-home';show('s-chat');}
 function goBack(){show(prev||'s-home');}
-function goPMS(){prev=document.querySelector('.screen.active')?.id||'s-home';show('s-pms');}
+function goRB(){prev=document.querySelector('.screen.active')?.id||'s-home';show('s-rb');}
+function goCrop(){prev=document.querySelector('.screen.active')?.id||'s-home';show('s-crop');}
+function goCropDocs(){prev=document.querySelector('.screen.active')?.id||'s-crop';show('s-cropdocs');}
+function goCropForm(){prev=document.querySelector('.screen.active')?.id||'s-cropdocs';show('s-cropform');}
+
+let cropApplied=false;
+
+function submitCropForm(){
+  const season=document.getElementById('cf-season').value;
+  const crop=document.getElementById('cf-crop').value;
+  const area=document.getElementById('cf-area').value;
+  document.getElementById('cf-summary-season').textContent=season;
+  document.getElementById('cf-summary-crop').textContent=crop;
+  document.getElementById('cf-summary-area').textContent=area+' acres';
+  cropApplied=true;
+  markCropSubmitted();
+  prev='s-schemes';
+  show('s-cropsuccess');
+}
+
+function markCropSubmitted(){
+  // Update Schemes page card
+  const badge=document.getElementById('crop-badge');
+  if(badge){ badge.textContent='Submitted'; badge.className='badge badge-green'; }
+  const sub=document.getElementById('crop-card-sub');
+  if(sub){ sub.textContent='e-Crop registration complete · Coverage active for this season'; }
+  // Update crop overview page
+  const tip=document.getElementById('crop-agent-tip');
+  if(tip){ tip.innerHTML='<div class="agent-dot"></div><div class="agent-text"><strong>All done, Venkata —</strong> your Crop Insurance application is submitted and coverage is active for this season.</div>'; }
+  const step3sub=document.getElementById('crop-step3-sub');
+  if(step3sub){ step3sub.textContent='Application submitted ✓'; }
+  // Update readiness checklist
+  const ecropItem=document.getElementById('cropdocs-ecrop-box');
+  if(ecropItem){ ecropItem.className='check-box cb-done'; ecropItem.innerHTML='<i class="ti ti-check"></i>'; }
+  const ecropSub=document.getElementById('cropdocs-ecrop-sub');
+  if(ecropSub){ ecropSub.className='check-sub cs-ok'; ecropSub.textContent='Submitted — coverage active for this season'; }
+  const progVal=document.getElementById('cropdocs-prog-val');
+  if(progVal){ progVal.textContent='4 of 4 ready'; }
+  const progFill=document.getElementById('cropdocs-prog-fill');
+  if(progFill){ progFill.style.width='100%'; }
+  const cta=document.getElementById('cropdocs-cta');
+  if(cta){ cta.textContent='View submitted application'; cta.onclick=()=>show('s-cropsuccess'); }
+}
+
+function goProfile(){prev=document.querySelector('.screen.active')?.id||'s-home';show('s-profile');}
 
 function toggleStep(id){
   const el=document.getElementById(id);
@@ -559,7 +889,7 @@ function toggleStep(id){
   const arr=document.getElementById(arrId);
   const open=el.style.display==='block';
   el.style.display=open?'none':'block';
-  if(arr) arr.textContent=open?'›':'↓';
+  if(arr) arr.innerHTML=open?'<i class="ti ti-chevron-right"></i>':'<i class="ti ti-chevron-down"></i>';
 }
 
 function makeOfficeCard(key, showAlt){
@@ -573,9 +903,9 @@ function makeOfficeCard(key, showAlt){
   return `<div style="background:var(--white);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:12px;">
     <div style="background:var(--navy);padding:10px 14px;"><div style="font-size:13px;font-weight:600;color:#fff;">${o.name}</div></div>
     <div style="padding:10px 14px;">
-      <div style="font-size:12px;color:var(--text-2);margin-bottom:3px;">📍 ${o.address}</div>
-      <div style="font-size:12px;color:var(--text-2);margin-bottom:3px;">👤 ${o.officer}</div>
-      <div style="font-size:12px;color:var(--text-2);">🕐 ${o.timing}</div>
+      <div style="font-size:12px;color:var(--text-2);margin-bottom:3px;display:flex;align-items:flex-start;gap:6px;"><i class="ti ti-map-pin" style="flex-shrink:0;margin-top:1px;"></i> ${o.address}</div>
+      <div style="font-size:12px;color:var(--text-2);margin-bottom:3px;display:flex;align-items:center;gap:6px;"><i class="ti ti-user"></i> ${o.officer}</div>
+      <div style="font-size:12px;color:var(--text-2);display:flex;align-items:center;gap:6px;"><i class="ti ti-clock"></i> ${o.timing}</div>
       ${altHtml}
       <div style="display:flex;gap:7px;margin-top:10px;">
         <button onclick="copyAddr('${o.address}')" style="flex:1;padding:8px;border-radius:10px;font-size:12px;font-weight:600;cursor:pointer;background:var(--bg);color:var(--navy);border:1px solid var(--border);font-family:'Noto Sans',sans-serif;">Copy address</button>
@@ -592,6 +922,8 @@ function openMaps(url){window.open(url,'_blank');}
 
 function goServiceDetail(id){
   prev=document.querySelector('.screen.active')?.id||'s-documents';
+  const labels={'s-documents':'Documents','s-cropdocs':'Crop Insurance'};
+  document.getElementById('svc-back-label').textContent=labels[prev]||'Back';
   const s=SERVICES[id];if(!s)return;
   document.getElementById('svc-badge').textContent=s.badge;
   document.getElementById('svc-title').textContent=s.title;
@@ -600,7 +932,7 @@ function goServiceDetail(id){
   document.getElementById('svc-docs').innerHTML=s.docs.map(d=>`<li style="font-size:12px;color:var(--text-2);padding:6px 0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;"><span style="width:6px;height:6px;border-radius:50%;background:var(--saffron);display:inline-block;flex-shrink:0;"></span>${d}</li>`).join('');
   document.getElementById('svc-office-card').innerHTML=makeOfficeCard(s.office, true);
   const aw=document.getElementById('svc-alert-wrap');
-  if(s.alert){const cls=s.alert.type==='danger'?'alert-danger':'alert-warn';const ic=s.alert.type==='danger'?'!':'⚠';aw.innerHTML=`<div class="alert-box ${cls}"><span class="alert-icon">${ic}</span><div class="alert-text">${s.alert.text}</div></div>`;}
+  if(s.alert){const cls=s.alert.type==='danger'?'alert-danger':'alert-warn';const ic=s.alert.type==='danger'?'<i class="ti ti-alert-circle"></i>':'<i class="ti ti-alert-triangle"></i>';aw.innerHTML=`<div class="alert-box ${cls}"><span class="alert-icon">${ic}</span><div class="alert-text">${s.alert.text}</div></div>`;}
   else aw.innerHTML='';
   show('s-svc');
 }
@@ -610,7 +942,7 @@ function makeLocationBubble(key){
   if(!o) return null;
   const el=document.createElement('div');
   el.className='loc-card';
-  el.innerHTML=`<div class="loc-head"><div class="loc-name">📍 ${o.name}</div></div>
+  el.innerHTML=`<div class="loc-head"><div class="loc-name"><i class="ti ti-map-pin-filled"></i> ${o.name}</div></div>
   <div class="loc-body">
     <div class="loc-row">${o.address}</div>
     <div class="loc-row"><span>Officer: </span>${o.officer}</div>
@@ -623,53 +955,140 @@ function makeLocationBubble(key){
   return el;
 }
 
-function detectOffice(text){
-  const t=text.toLowerCase();
-  if(t.includes('income cert')||t.includes('tehsil')) return 'income';
-  if(t.includes('caste cert')||t.includes('sdo')) return 'caste';
-  if(t.includes('e-mitra')||t.includes('jan aadhaar')||t.includes('janaadha')) return 'emitra';
-  if(t.includes('grievance')||t.includes('dlo')||t.includes('payment not')||t.includes('disburs')) return 'dlo';
-  if(t.includes('bank')||t.includes('seeding')||t.includes('abps')) return 'bank';
-  return null;
+function makeOptionButtons(options){
+  const wrap=document.createElement('div');
+  wrap.style.display='flex';
+  wrap.style.flexWrap='wrap';
+  wrap.style.gap='6px';
+  wrap.style.alignSelf='flex-start';
+  wrap.style.maxWidth='90%';
+  options.forEach(o=>{
+    const b=document.createElement('button');
+    b.className='sq-btn';
+    b.textContent=o.label;
+    b.onclick=()=>sendSuggested(o.query);
+    wrap.appendChild(b);
+  });
+  return wrap;
+}
+
+const ACTION_MAP = {
+  documents: ()=>goDocuments(),
+  land: ()=>goServiceDetail('land'),
+  bankseed: ()=>goServiceDetail('bankseed'),
+  ecrop: ()=>goServiceDetail('ecrop'),
+  cropdocs: ()=>goCropDocs(),
+  cropform: ()=>goCropForm(),
+  rb: ()=>goRB(),
+  crop: ()=>goCrop()
+};
+
+function makeActionButton(action){
+  const btn=document.createElement('button');
+  btn.className='chat-action-btn';
+  btn.innerHTML=`${action.label} <i class="ti ti-arrow-right"></i>`;
+  btn.onclick=()=>{ const fn=ACTION_MAP[action.key]; if(fn) fn(); };
+  return btn;
+}
+
+function makeLocationToggle(key){
+  const o=OFFICES[key];
+  if(!o) return null;
+  const btn=document.createElement('button');
+  btn.className='chat-loc-toggle';
+  btn.innerHTML=`<i class="ti ti-map-pin-filled"></i> <span>${o.name} — tap for directions</span>`;
+  btn.onclick=()=>{
+    const card=makeLocationBubble(key);
+    if(card){
+      btn.replaceWith(card);
+      document.getElementById('chat-messages').scrollTop=document.getElementById('chat-messages').scrollHeight;
+    }
+  };
+  return btn;
 }
 
 const MOCK_RESPONSES = [
+  { keys:['what schemes','which schemes','schemes can i apply','schemes am i eligible'],
+    reply:'You currently have two schemes relevant to you:\n\nRythu Bharosa — your active income support scheme.\nYSR Free Crop Insurance — eligible, open now.\n\nWhich one would you like to know about?',
+    options:[
+      {label:'Rythu Bharosa', query:'Tell me about Rythu Bharosa'},
+      {label:'Crop Insurance', query:'Tell me more about YSR Free Crop Insurance and how to enrol'},
+      {label:'Raise a grievance', query:'I want to raise a grievance'}
+    ] },
+  { keys:['tell me about rythu bharosa','about rythu bharosa','what is rythu bharosa'],
+    reply:'Your Rythu Bharosa application is already in progress, Venkata garu.\n\n₹13,500 every year, in 3 installments — direct to your bank.\nRight now, 2 things need fixing before your next installment: land record mismatch and bank seeding.',
+    action:{key:'rb',label:'Open Rythu Bharosa'} },
+  { keys:['i want to raise a grievance','raise a grievance','file a complaint','grievance','complaint','escalate','raise','objection'],
+    reply:'Sure. What is your grievance about?',
+    options:[
+      {label:'Installment not received', query:'My installment was not received'},
+      {label:'Land record name mismatch', query:'My land record name does not match my Aadhaar'},
+      {label:'Not in beneficiary list', query:'I am not in the Rythu Bharosa beneficiary list'},
+      {label:'Aadhaar seeding in land records', query:'My Aadhaar is not seeded correctly in my land records'},
+      {label:'Tenant farmer documents', query:'I am a tenant farmer and need to submit my documents'}
+    ] },
+  { keys:['name does not match my aadhaar','name mismatch','mutation for correction','name does not match'],
+    reply:'This is fixed through the "Mutation for Correction" service.\n\nVisit Village Secretariat, Kothapeta.\nCarry: Aadhaar, 1B/Adangal extract, pattadar passbook.\nRequest the correction from the VAA.',
+    location:'vsec' },
+  { keys:['beneficiary list','not eligible','application rejected','not in the list'],
+    reply:"If you're not in the beneficiary list:\n\nCheck status at ysrrythubharosa.ap.gov.in using your Aadhaar.\nIf land details are missing or wrong, visit Village Secretariat for re-verification.\nCarry: Aadhaar, land records, bank passbook.",
+    location:'vsec' },
+  { keys:['aadhaar is not seeded correctly','pattadar aadhaar','webland','seeded correctly in my land'],
+    reply:'This needs the "Pattadar Aadhaar Seeding" service.\n\nVisit Village Secretariat, Kothapeta.\nThis corrects your Aadhaar number in the land records (Webland) database.\nWithout this, payments can be blocked even if your bank seeding is correct.',
+    location:'vsec' },
+  { keys:['tenant farmer and need','tenancy agreement','lease agreement','tenant farmer documents'],
+    reply:'As a tenant farmer, you need:\n\nA tenancy agreement registered under the AP Licensed Cultivators Act.\nSubmit this at Village Secretariat, Kothapeta.\nThis confirms you as a registered tenant cultivator for Rythu Bharosa.',
+    location:'vsec' },
   { keys:['eligible','qualify','suit','criteria','who can'],
-    reply:'Yes Priya, you qualify for PMS.\n\nSC category ✓\nFamily income under ₹2.5 lakh ✓\nClass 12 enrolled ✓\nRajasthan domicile ✓' },
-  { keys:['what will i get','benefit','money','amount','how much','get from'],
-    reply:'Two benefits from PMS:\n\nFull tuition fee reimbursement — paid directly to your school.\n₹1,200 every month — if you stay in a hostel.' },
-  { keys:['income cert','income certificate','renew income','tehsil'],
-    reply:'Your income certificate needs renewal urgently.\n\nGo to Tonk Tehsil Office.\nCarry: Aadhaar, ration card, utility bill.',
-    location:'income' },
-  { keys:['caste cert','caste certificate','sdo','sc cert'],
-    reply:'Your caste certificate must exist in the backend — not just on paper.\n\nGo to SDO Office, Tonk or the e-Mitra kiosk at Tonk Bus Stand.',
-    location:'caste' },
-  { keys:['jan aadhaar','janaadhar','e-mitra','emitra','update details'],
-    reply:'Update your Jan Aadhaar at the e-Mitra kiosk.\n\nMake sure name and date of birth match your Aadhaar exactly.',
-    location:'emitra' },
-  { keys:['bank','seeding','abps','account','payment link'],
-    reply:'Your bank account must be linked to Aadhaar for ABPS payment.\n\nVisit your nearest bank branch in Tonk to seed your Aadhaar.',
-    location:'bank' },
-  { keys:['payment not received','not received','money not','disburs','not paid'],
-    reply:'Approved scholarships fail at payment when:\n\nAadhaar–bank seeding is wrong or absent.\nBank account is closed.\n\nVisit DLO-SJE office in Tonk to escalate.',
-    location:'dlo' },
-  { keys:['grievance','complaint','escalate','raise','objection'],
-    reply:'To raise a grievance:\n\nGo to DLO-SJE Office, District Collectorate, Tonk.\nOfficer: District Level Officer, SJE.\nTiming: 10am–5pm, Mon–Fri.',
-    location:'dlo' },
+    reply:'Your Rythu Bharosa application is already in progress, Venkata garu.\n\nLand-owning farmer: confirmed\nAP domicile: confirmed\nAadhaar linked: confirmed\n2 things still need fixing before your next installment.',
+    action:{key:'documents',label:'View pending items'} },
+  { keys:['what will i get','benefit','money','amount','how much','installment amount'],
+    reply:'Rythu Bharosa gives you:\n\n₹13,500 every year\nPaid in 3 installments\nLinked to Kharif, Rabi and Zaid seasons — direct to your bank.' },
+  { keys:['land record','1b','adangal','land office','mro'],
+    reply:'Your land record (1B/Adangal) has a name mismatch.\n\nVisit Mandal Revenue Office, Kothapeta.\nCarry: Aadhaar, pattadar passbook, land tax receipt.',
+    location:'land',
+    action:{key:'land',label:'Open land record details'} },
+  { keys:['bank seed','seeding','aadhaar bank','dbt','account link'],
+    reply:'Your bank account needs Aadhaar seeding for DBT.\n\nVisit your bank branch in Kothapeta.\nCarry: Aadhaar card and passbook.',
+    location:'bankseed',
+    action:{key:'bankseed',label:'Open bank seeding details'} },
+  { keys:['village secretariat','crop registration','e-crop','vaa'],
+    reply:'Update your crop details each season.\n\nVisit Village Secretariat, Kothapeta.\nMeet the Village Agriculture Assistant.',
+    location:'vsec',
+    action:{key:'ecrop',label:'Open e-Crop registration details'} },
+  { keys:['rbk','rythu bharosa kendra','passbook','seed','fertiliser'],
+    reply:'For passbook copies, seeds, and fertiliser support:\n\nVisit Rythu Bharosa Kendra, Kothapeta.\nOpen 9am–6pm, Mon–Sat.',
+    location:'rbk' },
+  { keys:['installment not received','not received','money not','disburs','not paid','payment not'],
+    reply:'Installments fail to reach you when:\n\nLand record name doesn\'t match Aadhaar.\nBank account isn\'t Aadhaar-seeded.\n\nFirst visit Village Secretariat to fix these. If still unresolved, escalate to District Agriculture Office.',
+    location:'vsec' },
+  { keys:['crop insurance','bima','insurance','enrol','e-crop registration'],
+    reply:"For YSR Free Crop Insurance, here's where you stand:\n\nAadhaar, land record, AP domicile — already on file.\nOnly e-Crop registration is missing.\nYour VAA usually records this during the village survey — or contact them via Village Secretariat, Kothapeta before Kharif sowing.",
+    location:'vsec',
+    action:{key:'cropdocs',label:'Check enrolment readiness'} },
   { keys:['apply','how to apply','application','submit','start'],
-    reply:'To apply for PMS:\n\nStep 1: Login at sje.rajasthan.gov.in with your SSO ID.\nStep 2: Fill the form — it saves your progress.\nStep 3: Upload documents and submit before May 31, 2026.' },
+    reply:'Your Rythu Bharosa application is already submitted and in progress — no need to apply again.\n\nThe one that still needs applying is YSR Free Crop Insurance.\nWant to fill that now?',
+    action:{key:'cropdocs',label:'Apply for Crop Insurance'} },
   { keys:['document','what do i need','checklist','papers','certificate'],
-    reply:'Documents needed for PMS:\n\nIncome certificate (valid) ⚠ yours is expiring\nCaste certificate (SC) — must be in backend\nJan Aadhaar, Aadhaar, bank passbook, marksheet, fee receipt.' },
-  { keys:['deadline','last date','when','date','time'],
-    reply:'PMS application deadline: May 31, 2026.\n\nApply at sje.rajasthan.gov.in using your SSO ID.\nDon\'t wait — your income cert needs renewal first.' },
+    reply:'Documents needed for Rythu Bharosa:\n\nLand record (1B/Adangal) - has a mismatch\nBank account - needs Aadhaar seeding\nAadhaar, AP domicile, PM-KISAN enrolment, passbook.',
+    action:{key:'documents',label:'Open documents checklist'} },
+  { keys:['deadline','last date','when','date','time','kharif','rabi'],
+    reply:'Next installment is linked to the Kharif season.\n\nFix your land record and bank seeding now.\nDon\'t wait — delays hold back the whole installment.',
+    action:{key:'documents',label:'Open documents checklist'} },
   { keys:['office','where','location','address','go'],
-    reply:'Which office do you need?\n\nIncome cert → Tonk Tehsil Office\nCaste cert → SDO Office, Civil Lines, Tonk\nJan Aadhaar → e-Mitra Kiosk, Tonk Bus Stand\nPayment issue → DLO-SJE, District Collectorate' },
-  { keys:['sso','login','password','account','portal'],
-    reply:'To get your SSO ID:\n\nGo to sso.rajasthan.gov.in\nRegister with your Aadhaar or Jan Aadhaar number.\nUse this ID to login to the scholarship portal.' },
-  { keys:['hello','hi','namaste','helo','hey'],
-    reply:'Namaste Priya! 👋\n\nI can help you with your Post-Matric Scholarship.\nAsk me about eligibility, documents, office locations, or payment issues.' },
-  { keys:['thank','shukriya','dhanyavad'],
-    reply:'You\'re welcome Priya!\n\nIs there anything else you need help with for your PMS scholarship?' },
+    reply:'Which office do you need?\n\nLand record → Mandal Revenue Office, Kothapeta\nBank seeding → Bank branch, Kothapeta\nCrop registration → Village Secretariat\nGrievance → District Agriculture Office, Kakinada' },
+  { keys:['pm-kisan','pmkisan','central scheme'],
+    reply:'PM-KISAN is the central scheme linked to Rythu Bharosa.\n\nYou are already enrolled and active.\n₹6,000 of your ₹13,500 comes through PM-KISAN.' },
+  { keys:['hello','hi','namaskaram','namaste','hey'],
+    reply:'Namaskaram Venkata garu! 👋\n\nI can help with Rythu Bharosa, crop insurance, documents, office locations, payments, or grievances.\n\nWhat do you need?',
+    options:[
+      {label:'What schemes can I apply for?', query:'What schemes am I eligible for?'},
+      {label:'About Rythu Bharosa', query:'Tell me about Rythu Bharosa'},
+      {label:'About crop insurance', query:'Tell me more about YSR Free Crop Insurance and how to enrol'},
+      {label:'Raise a grievance', query:'I want to raise a grievance'}
+    ] },
+  { keys:['thank','dhanyavadalu','thanks'],
+    reply:'Welcome, Venkata garu!\n\nIs there anything else you need help with for your Rythu Bharosa scheme?' },
 ];
 
 function getMockResponse(msg){
@@ -677,7 +1096,7 @@ function getMockResponse(msg){
   for(const r of MOCK_RESPONSES){
     if(r.keys.some(k => t.includes(k))) return r;
   }
-  return { reply:'I can help you with:\n\nEligibility · Documents needed · Office locations\nHow to apply · Payment issues · Grievances\n\nWhat would you like to know?' };
+  return { reply:'I can help you with:\n\nEligibility · Documents needed · Office locations\nHow to apply · Installment issues · Grievances\n\nWhat would you like to know?' };
 }
 
 function sendMessage(){
@@ -695,14 +1114,31 @@ function sendMessage(){
     const match = getMockResponse(msg);
     appendMsg(match.reply,'bot');
     hist.push({role:'assistant',content:match.reply});
+    let delay=300;
     if(match.location){
       setTimeout(()=>{
-        const card=makeLocationBubble(match.location);
-        if(card){
-          document.getElementById('chat-messages').appendChild(card);
+        const btn=makeLocationToggle(match.location);
+        if(btn){
+          document.getElementById('chat-messages').appendChild(btn);
           document.getElementById('chat-messages').scrollTop=document.getElementById('chat-messages').scrollHeight;
         }
-      },300);
+      },delay);
+      delay+=200;
+    }
+    if(match.action){
+      setTimeout(()=>{
+        const ab=makeActionButton(match.action);
+        document.getElementById('chat-messages').appendChild(ab);
+        document.getElementById('chat-messages').scrollTop=document.getElementById('chat-messages').scrollHeight;
+      },delay);
+      delay+=200;
+    }
+    if(match.options){
+      setTimeout(()=>{
+        const ob=makeOptionButtons(match.options);
+        document.getElementById('chat-messages').appendChild(ob);
+        document.getElementById('chat-messages').scrollTop=document.getElementById('chat-messages').scrollHeight;
+      },delay);
     }
     document.getElementById('send-btn').disabled=false;
   }, 800);
@@ -712,12 +1148,8 @@ function appendMsg(text,cls){
   const m=document.getElementById('chat-messages');
   const el=document.createElement('div');
   el.className='msg '+cls;
-  if(cls.includes('bot') && !cls.includes('typing')){
-    el.innerText=text;
-    el.style.whiteSpace='pre-wrap';
-  } else {
-    el.innerText=text;
-  }
+  el.innerText=text;
+  if(cls.includes('bot') && !cls.includes('typing')) el.style.whiteSpace='pre-wrap';
   m.appendChild(el);m.scrollTop=m.scrollHeight;return el;
 }
 function sendSuggested(t){document.getElementById('chat-input').value=t;sendMessage();}
