@@ -1102,32 +1102,51 @@ function makeActionButton(action){
   return btn;
 }
 
-function makeLocationToggle(key){
-  const o=OFFICES[key];
-  if(!o) return null;
-  const btn=document.createElement('button');
-  btn.className='chat-loc-toggle';
-  btn.innerHTML=`<i class="ti ti-map-pin-filled"></i> <span>${o.name} — tap for directions</span>`;
-  btn.onclick=()=>{
-    const card=makeLocationBubble(key);
-    if(card){
-      btn.replaceWith(card);
-      document.getElementById('chat-messages').scrollTop=document.getElementById('chat-messages').scrollHeight;
-    }
-  };
-  return btn;
+function makeStepsCard(steps){
+  const card=document.createElement('div');
+  card.style.cssText='background:var(--white);border:1px solid var(--border);border-radius:14px;border-bottom-left-radius:4px;padding:2px 13px;max-width:90%;align-self:flex-start;';
+  steps.forEach((s,i)=>{
+    const row=document.createElement('div');
+    row.style.cssText='display:flex;gap:9px;align-items:flex-start;padding:9px 0;'+(i<steps.length-1?'border-bottom:0.5px solid var(--border);':'');
+    row.innerHTML=`<span style="width:18px;height:18px;border-radius:50%;background:var(--saffron-light);color:var(--saffron);font-size:10px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">${i+1}</span><span style="font-size:12px;color:var(--text);line-height:1.55;">${s}</span>`;
+    card.appendChild(row);
+  });
+  return card;
+}
+
+function makeChecklistCard(items){
+  const ICONS={ok:['ti-check','var(--green)'],alert:['ti-alert-circle','var(--red)'],warn:['ti-alert-triangle','var(--saffron)']};
+  const card=document.createElement('div');
+  card.style.cssText='background:var(--white);border:1px solid var(--border);border-radius:14px;border-bottom-left-radius:4px;padding:2px 13px;max-width:90%;align-self:flex-start;';
+  items.forEach((it,i)=>{
+    const [icon,color]=ICONS[it.status]||ICONS.ok;
+    const row=document.createElement('div');
+    row.style.cssText='display:flex;gap:9px;align-items:flex-start;padding:9px 0;'+(i<items.length-1?'border-bottom:0.5px solid var(--border);':'');
+    row.innerHTML=`<i class="ti ${icon}" style="color:${color};font-size:15px;flex-shrink:0;margin-top:1px;"></i><span style="font-size:12px;color:var(--text);line-height:1.55;">${it.text}</span>`;
+    card.appendChild(row);
+  });
+  return card;
 }
 
 const MOCK_RESPONSES = [
   { keys:['what schemes','which schemes','schemes can i apply','schemes am i eligible'],
-    reply:'You currently have two schemes relevant to you:\n\nRythu Bharosa — your active income support scheme.\nYSR Free Crop Insurance — eligible, open now.\n\nWhich one would you like to know about?',
+    reply:'You currently have two schemes relevant to you. Which one would you like to know about?',
+    checklist:[
+      {text:'Rythu Bharosa — your active income support scheme', status:'ok'},
+      {text:'YSR Free Crop Insurance — eligible, open now', status:'warn'}
+    ],
     options:[
       {label:'Rythu Bharosa', query:'Tell me about Rythu Bharosa'},
       {label:'Crop Insurance', query:'Tell me more about YSR Free Crop Insurance and how to enrol'},
       {label:'Raise a grievance', query:'I want to raise a grievance'}
     ] },
   { keys:['tell me about rythu bharosa','about rythu bharosa','what is rythu bharosa'],
-    reply:'Your Rythu Bharosa application is already in progress, Venkata garu.\n\n₹13,500 every year, in 3 installments — direct to your bank.\nRight now, 2 things need fixing before your next installment: land record mismatch and bank seeding.',
+    reply:'Your Rythu Bharosa application is already in progress, Venkata garu.',
+    checklist:[
+      {text:'₹13,500/year in 3 installments — direct to your bank', status:'ok'},
+      {text:'Land record mismatch needs fixing', status:'alert'},
+      {text:'Bank Aadhaar seeding not done', status:'alert'}
+    ],
     action:{key:'rb',label:'Open Rythu Bharosa'} },
   { keys:['i want to raise a grievance','raise a grievance','file a complaint','grievance','complaint','escalate','raise','objection'],
     reply:'Sure. What is your grievance about?',
@@ -1139,59 +1158,144 @@ const MOCK_RESPONSES = [
       {label:'Tenant farmer documents', query:'I am a tenant farmer and need to submit my documents'}
     ] },
   { keys:['name does not match my aadhaar','name mismatch','mutation for correction','name does not match'],
-    reply:'This is fixed through the "Mutation for Correction" service.\n\nVisit Village Secretariat, Kothapeta.\nCarry: Aadhaar, 1B/Adangal extract, pattadar passbook.\nRequest the correction from the VAA.',
+    reply:'This is fixed through the "Mutation for Correction" service.',
+    steps:[
+      'Visit Village Secretariat, Kothapeta',
+      'Carry Aadhaar, 1B/Adangal extract, and pattadar passbook',
+      'Request the correction from the VAA'
+    ],
     location:'vsec' },
   { keys:['beneficiary list','not eligible','application rejected','not in the list'],
-    reply:"If you're not in the beneficiary list:\n\nCheck status at ysrrythubharosa.ap.gov.in using your Aadhaar.\nIf land details are missing or wrong, visit Village Secretariat for re-verification.\nCarry: Aadhaar, land records, bank passbook.",
+    reply:"If you're not in the beneficiary list, here's what to do.",
+    steps:[
+      'Check status at ysrrythubharosa.ap.gov.in using your Aadhaar',
+      'If land details are missing or wrong, visit Village Secretariat for re-verification',
+      'Carry Aadhaar, land records, and bank passbook'
+    ],
     location:'vsec' },
   { keys:['aadhaar is not seeded correctly','pattadar aadhaar','webland','seeded correctly in my land'],
-    reply:'This needs the "Pattadar Aadhaar Seeding" service.\n\nVisit Village Secretariat, Kothapeta.\nThis corrects your Aadhaar number in the land records (Webland) database.\nWithout this, payments can be blocked even if your bank seeding is correct.',
+    reply:'This needs the "Pattadar Aadhaar Seeding" service.',
+    steps:[
+      'Visit Village Secretariat, Kothapeta',
+      'This corrects your Aadhaar number in the land records (Webland) database',
+      'Without this, payments can be blocked even if your bank seeding is correct'
+    ],
     location:'vsec' },
   { keys:['tenant farmer and need','tenancy agreement','lease agreement','tenant farmer documents'],
-    reply:'As a tenant farmer, you need:\n\nA tenancy agreement registered under the AP Licensed Cultivators Act.\nSubmit this at Village Secretariat, Kothapeta.\nThis confirms you as a registered tenant cultivator for Rythu Bharosa.',
+    reply:"As a tenant farmer, here's what you need.",
+    steps:[
+      'A tenancy agreement registered under the AP Licensed Cultivators Act',
+      'Submit this at Village Secretariat, Kothapeta',
+      'This confirms you as a registered tenant cultivator for Rythu Bharosa'
+    ],
     location:'vsec' },
   { keys:['eligible','qualify','suit','criteria','who can'],
-    reply:'Your Rythu Bharosa application is already in progress, Venkata garu.\n\nLand-owning farmer: confirmed\nAP domicile: confirmed\nAadhaar linked: confirmed\n2 things still need fixing before your next installment.',
+    reply:'Your Rythu Bharosa application is already in progress, Venkata garu.',
+    checklist:[
+      {text:'Land-owning farmer — confirmed', status:'ok'},
+      {text:'AP domicile — confirmed', status:'ok'},
+      {text:'Aadhaar linked — confirmed', status:'ok'},
+      {text:'2 things still need fixing before your next installment', status:'alert'}
+    ],
     action:{key:'documents',label:'View pending items'} },
   { keys:['what will i get','benefit','money','amount','how much','installment amount'],
-    reply:'Rythu Bharosa gives you:\n\n₹13,500 every year\nPaid in 3 installments\nLinked to Kharif, Rabi and Zaid seasons — direct to your bank.' },
+    reply:'Rythu Bharosa gives you:',
+    checklist:[
+      {text:'₹13,500 every year', status:'ok'},
+      {text:'Paid in 3 installments', status:'ok'},
+      {text:'Linked to Kharif, Rabi and Zaid seasons — direct to your bank', status:'ok'}
+    ] },
   { keys:['land record','1b','adangal','land office','mro'],
-    reply:'Your land record (1B/Adangal) has a name mismatch.\n\nVisit Mandal Revenue Office, Kothapeta.\nCarry: Aadhaar, pattadar passbook, land tax receipt.',
+    reply:'Your land record (1B/Adangal) has a name mismatch.',
+    steps:[
+      'Visit Mandal Revenue Office, Kothapeta',
+      'Carry Aadhaar, pattadar passbook, and land tax receipt'
+    ],
     location:'land',
     action:{key:'land',label:'Open land record details'} },
   { keys:['bank seed','seeding','aadhaar bank','dbt','account link'],
-    reply:'Your bank account needs Aadhaar seeding for DBT.\n\nVisit your bank branch in Kothapeta.\nCarry: Aadhaar card and passbook.',
+    reply:'Your bank account needs Aadhaar seeding for DBT.',
+    steps:[
+      'Visit your bank branch in Kothapeta',
+      'Carry Aadhaar card and passbook'
+    ],
     location:'bankseed',
     action:{key:'bankseed',label:'Open bank seeding details'} },
   { keys:['village secretariat','crop registration','e-crop','vaa'],
-    reply:'Update your crop details each season.\n\nVisit Village Secretariat, Kothapeta.\nMeet the Village Agriculture Assistant.',
+    reply:'Update your crop details each season.',
+    steps:[
+      'Visit Village Secretariat, Kothapeta',
+      'Meet the Village Agriculture Assistant'
+    ],
     location:'vsec',
     action:{key:'ecrop',label:'Open e-Crop registration details'} },
   { keys:['rbk','rythu bharosa kendra','passbook','seed','fertiliser'],
-    reply:'For passbook copies, seeds, and fertiliser support:\n\nVisit Rythu Bharosa Kendra, Kothapeta.\nOpen 9am–6pm, Mon–Sat.',
+    reply:'For passbook copies, seeds, and fertiliser support:',
+    steps:[
+      'Visit Rythu Bharosa Kendra, Kothapeta',
+      'Open 9am–6pm, Mon–Sat'
+    ],
     location:'rbk' },
   { keys:['installment not received','not received','money not','disburs','not paid','payment not'],
-    reply:'Installments fail to reach you when:\n\nLand record name doesn\'t match Aadhaar.\nBank account isn\'t Aadhaar-seeded.\n\nFirst visit Village Secretariat to fix these. If still unresolved, escalate to District Agriculture Office.',
+    reply:'Installments fail to reach you when:',
+    checklist:[
+      {text:"Land record name doesn't match Aadhaar", status:'alert'},
+      {text:"Bank account isn't Aadhaar-seeded", status:'alert'}
+    ],
+    steps:[
+      'First visit Village Secretariat to fix these',
+      'If still unresolved, escalate to District Agriculture Office'
+    ],
     location:'vsec' },
   { keys:['crop insurance','bima','insurance','enrol','e-crop registration'],
-    reply:"For YSR Free Crop Insurance, here's where you stand:\n\nAadhaar, land record, AP domicile — already on file.\nOnly e-Crop registration is missing.\nYour VAA usually records this during the village survey — or contact them via Village Secretariat, Kothapeta before Kharif sowing.",
+    reply:"For YSR Free Crop Insurance, here's where you stand.",
+    checklist:[
+      {text:'Aadhaar, land record, AP domicile — already on file', status:'ok'},
+      {text:'e-Crop registration — missing', status:'alert'}
+    ],
+    steps:[
+      'Your VAA usually records this during the village survey',
+      'Or contact them via Village Secretariat, Kothapeta before Kharif sowing'
+    ],
     location:'vsec',
     action:{key:'cropdocs',label:'Check enrolment readiness'} },
   { keys:['apply','how to apply','application','submit','start'],
-    reply:'Your Rythu Bharosa application is already submitted and in progress — no need to apply again.\n\nThe one that still needs applying is YSR Free Crop Insurance.\nWant to fill that now?',
+    reply:'Your Rythu Bharosa application is already submitted and in progress — no need to apply again.',
+    checklist:[
+      {text:'The one that still needs applying is YSR Free Crop Insurance', status:'warn'}
+    ],
     action:{key:'cropdocs',label:'Apply for Crop Insurance'} },
   { keys:['document','what do i need','checklist','papers','certificate'],
-    reply:'Documents needed for Rythu Bharosa:\n\nLand record (1B/Adangal) - has a mismatch\nBank account - needs Aadhaar seeding\nAadhaar, AP domicile, PM-KISAN enrolment, passbook.',
+    reply:'Documents needed for Rythu Bharosa:',
+    checklist:[
+      {text:'Land record (1B/Adangal) — has a mismatch', status:'alert'},
+      {text:'Bank account — needs Aadhaar seeding', status:'alert'},
+      {text:'Aadhaar, AP domicile, PM-KISAN, passbook — already done', status:'ok'}
+    ],
     action:{key:'documents',label:'Open documents checklist'} },
   { keys:['deadline','last date','when','date','time','kharif','rabi'],
-    reply:'Next installment is linked to the Kharif season.\n\nFix your land record and bank seeding now.\nDon\'t wait — delays hold back the whole installment.',
+    reply:'Next installment is linked to the Kharif season.',
+    steps:[
+      'Fix your land record and bank seeding now',
+      "Don't wait — delays hold back the whole installment"
+    ],
     action:{key:'documents',label:'Open documents checklist'} },
   { keys:['office','where','location','address','go'],
-    reply:'Which office do you need?\n\nLand record → Mandal Revenue Office, Kothapeta\nBank seeding → Bank branch, Kothapeta\nCrop registration → Village Secretariat\nGrievance → District Agriculture Office, Kakinada' },
+    reply:'Which office do you need?',
+    steps:[
+      'Land record → Mandal Revenue Office, Kothapeta',
+      'Bank seeding → Bank branch, Kothapeta',
+      'Crop registration → Village Secretariat',
+      'Grievance → District Agriculture Office, Kakinada'
+    ] },
   { keys:['pm-kisan','pmkisan','central scheme'],
-    reply:'PM-KISAN is the central scheme linked to Rythu Bharosa.\n\nYou are already enrolled and active.\n₹6,000 of your ₹13,500 comes through PM-KISAN.' },
+    reply:'PM-KISAN is the central scheme linked to Rythu Bharosa.',
+    checklist:[
+      {text:'You are already enrolled and active', status:'ok'},
+      {text:'₹6,000 of your ₹13,500 comes through PM-KISAN', status:'ok'}
+    ] },
   { keys:['hello','hi','namaskaram','namaste','hey'],
-    reply:'Namaskaram Venkata garu! 👋\n\nI can help with Rythu Bharosa, crop insurance, documents, office locations, payments, or grievances.\n\nWhat do you need?',
+    reply:'Namaskaram Venkata garu! 👋 I can help with Rythu Bharosa, crop insurance, documents, office locations, payments, or grievances. What do you need?',
     options:[
       {label:'What schemes can I apply for?', query:'What schemes am I eligible for?'},
       {label:'About Rythu Bharosa', query:'Tell me about Rythu Bharosa'},
@@ -1199,7 +1303,7 @@ const MOCK_RESPONSES = [
       {label:'Raise a grievance', query:'I want to raise a grievance'}
     ] },
   { keys:['thank','dhanyavadalu','thanks'],
-    reply:'Welcome, Venkata garu!\n\nIs there anything else you need help with for your Rythu Bharosa scheme?' },
+    reply:'Welcome, Venkata garu! Is there anything else you need help with for your Rythu Bharosa scheme?' },
 ];
 
 function getMockResponse(msg){
@@ -1225,30 +1329,40 @@ function sendMessage(){
     const match = getMockResponse(msg);
     appendMsg(match.reply,'bot');
     hist.push({role:'assistant',content:match.reply});
-    let delay=300;
+    let delay=250;
+    const cm=document.getElementById('chat-messages');
+    if(match.checklist){
+      setTimeout(()=>{
+        cm.appendChild(makeChecklistCard(match.checklist.map(it=>it.text?it:({text:it,status:'ok'}))));
+        cm.scrollTop=cm.scrollHeight;
+      },delay);
+      delay+=200;
+    }
+    if(match.steps){
+      setTimeout(()=>{
+        cm.appendChild(makeStepsCard(match.steps));
+        cm.scrollTop=cm.scrollHeight;
+      },delay);
+      delay+=200;
+    }
     if(match.location){
       setTimeout(()=>{
-        const btn=makeLocationToggle(match.location);
-        if(btn){
-          document.getElementById('chat-messages').appendChild(btn);
-          document.getElementById('chat-messages').scrollTop=document.getElementById('chat-messages').scrollHeight;
-        }
+        const card=makeLocationBubble(match.location);
+        if(card){ cm.appendChild(card); cm.scrollTop=cm.scrollHeight; }
       },delay);
       delay+=200;
     }
     if(match.action){
       setTimeout(()=>{
-        const ab=makeActionButton(match.action);
-        document.getElementById('chat-messages').appendChild(ab);
-        document.getElementById('chat-messages').scrollTop=document.getElementById('chat-messages').scrollHeight;
+        cm.appendChild(makeActionButton(match.action));
+        cm.scrollTop=cm.scrollHeight;
       },delay);
       delay+=200;
     }
     if(match.options){
       setTimeout(()=>{
-        const ob=makeOptionButtons(match.options);
-        document.getElementById('chat-messages').appendChild(ob);
-        document.getElementById('chat-messages').scrollTop=document.getElementById('chat-messages').scrollHeight;
+        cm.appendChild(makeOptionButtons(match.options));
+        cm.scrollTop=cm.scrollHeight;
       },delay);
     }
     document.getElementById('send-btn').disabled=false;
